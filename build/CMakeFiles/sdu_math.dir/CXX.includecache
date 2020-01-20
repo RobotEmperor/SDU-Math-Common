@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/yik/sdu_ws/SDU-Math-Common/sdu_math/src/kinematics.cpp
+sdu_math/kinematics.h
+/home/yik/sdu_ws/SDU-Math-Common/sdu_math/src/sdu_math/kinematics.h
+
+/home/yik/sdu_ws/SDU-Math-Common/sdu_math/src/statics_math.cpp
+sdu_math/statics_math.h
+/home/yik/sdu_ws/SDU-Math-Common/sdu_math/src/sdu_math/statics_math.h
+
