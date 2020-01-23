@@ -12,12 +12,16 @@
 #include <vector>
 #include <math.h>
 
+#define DEGREE2RADIAN M_PI/180.0
+#define RADIAN2DEGREE  180.0/M_PI
+
 class Kinematics
 {
 
   public:
     Kinematics();
     ~Kinematics();
+    double a ;
 
     std::vector<double> joint_positions;
 
