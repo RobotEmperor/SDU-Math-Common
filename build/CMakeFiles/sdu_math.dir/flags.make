@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC   -std=c++11
 
 CXX_DEFINES = -Dsdu_math_EXPORTS
 
-CXX_INCLUDES = -I/home/yik/sdu_ws/SDU-Math-Common/sdu_ur10e_sensor/include -I/usr/include/eigen3 -I/home/yik/sdu_ws/SDU-Math-Common/SDU-Math/sdu_math/include 
+CXX_INCLUDES = -I/home/yik/sdu_ws/SDU-Math-Common/include -I/usr/include/eigen3 
 

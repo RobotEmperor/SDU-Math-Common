@@ -6,19 +6,12 @@ SET ( PROJECT_VERSION_MINOR 1 )
 
 SET ( CMAKE_C_COMPILER "gcc" )
  
-INCLUDE_DIRECTORIES (${PROJECT_NAME}/include)
+INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/include)
 
 add_compile_options(-std=c++11)
  
 find_package(Eigen3 REQUIRED)
 INCLUDE_DIRECTORIES (${EIGEN3_INCLUDE_DIR})
-
-set(LIB_HEADER_FILES
-        sdu_math/include/sdu_math/kinematics.h
-        sdu_math/include/sdu_math/statics_math.h
-)
-INCLUDE_DIRECTORIES (SDU-Math/sdu_math/include)
-
 
 set( sdu_math_SOURCE_FILES 
  sdu_math/src/kinematics.cpp

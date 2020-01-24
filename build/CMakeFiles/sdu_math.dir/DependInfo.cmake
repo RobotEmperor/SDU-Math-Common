@@ -11,9 +11,8 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../sdu_ur10e_sensor/include"
+  "../include"
   "/usr/include/eigen3"
-  "../SDU-Math/sdu_math/include"
   )
 
 # Targets to which this target links.

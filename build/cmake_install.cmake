@@ -53,13 +53,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   endif()
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xsdu_mathx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/sdu_math" TYPE FILE FILES
-    "/home/yik/sdu_ws/SDU-Math-Common/sdu_math/include/sdu_math/kinematics.h"
-    "/home/yik/sdu_ws/SDU-Math-Common/sdu_math/include/sdu_math/statics_math.h"
-    )
-endif()
-
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()
