@@ -1,11 +1,11 @@
 /*
- * statics_math.cpp
+ * statistics_math.cpp
  *
  *  Created on: Jan 17, 2020
  *      Author: yik
  */
 
-#include "sdu_math/statics_math.h"
+#include "sdu_math/statistics_math.h"
 
 
 double calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)

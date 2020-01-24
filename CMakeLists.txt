@@ -1,21 +1,26 @@
 CMAKE_MINIMUM_REQUIRED ( VERSION 2.8 )
  
-PROJECT ( "sdu_ur10e_sensor" )
+PROJECT ( "sdu_math" )
 SET ( PROJECT_VERSION_MAJOR 0 )
 SET ( PROJECT_VERSION_MINOR 1 )
 
 SET ( CMAKE_C_COMPILER "gcc" )
  
-INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES (${CMAKE_SOURCE_DIR}/sdu_math/include)
 
 add_compile_options(-std=c++11)
  
 find_package(Eigen3 REQUIRED)
 INCLUDE_DIRECTORIES (${EIGEN3_INCLUDE_DIR})
 
+set(LIB_HEADER_FILES
+   ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/kinematics.h
+   ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/statistics_math.h
+   )
+
 set( sdu_math_SOURCE_FILES 
  sdu_math/src/kinematics.cpp
- sdu_math/src/statics_math.cpp
+ sdu_math/src/statistics_math.cpp
 )
 
 

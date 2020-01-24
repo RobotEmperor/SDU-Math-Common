@@ -1,1 +1,0 @@
-/usr/local/lib/libsdu_math.so
