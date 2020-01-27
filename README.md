@@ -49,7 +49,7 @@ SDU-Math-Common includes the following functions available:
 
 ## Classes and Functions ##
 
-  ###kinematics###
+  ### kinematics ###
   
   * calculate_forward_kinematics(int joint_id, std::vector<double> theta)
   
@@ -80,7 +80,7 @@ For example(kinematics),
     
     
     
-  ###statistics###
+  ### statistics ###
   
   * double calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
   
