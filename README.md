@@ -8,7 +8,7 @@ SDU-Math-Common includes the following functions available:
 
 * statistics_math 
 
-  Kinematics includes essential robotics math tool such as forward kinematics of UR10e, rotation matrix, transformation matrix. Statistics_math is about basic statistics math like cusum method. 
+  Kinematics includes essential robotics math tool such as forward kinematics of UR10e, rotation matrix, transformation matrix. Statistics_math is about basic statistics math like a cusum method. 
 
 ## Dependencies ##
 * [Eigen3] (http://eigen.tuxfamily.org/index.php?title=Main_Page)
