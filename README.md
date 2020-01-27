@@ -55,7 +55,7 @@ SDU-Math-Common includes the following functions available:
   
   It returns transformation_matrix according to current joint value. This function is used to transform tool's values from the tool's frame to the base frame because tool's values that ur_rtde outputs are relative to the tool's frame and force-torque sensor's values that ur_rtde offers are relative to the base frame.  
   
-  * rotation_matix_x,y,z (double radian)
+  * rotation_matrix_x,y,z (double radian)
   
   It returns 3 X 3 rotation matrix by radian.
   
