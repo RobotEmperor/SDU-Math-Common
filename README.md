@@ -8,7 +8,7 @@ SDU-Math-Common includes the following functions available:
 
 * statistics_math 
 
-  Kinematics includes essential robotics math tool such as forward kinematics of UR10e, rotation matrix, transformation matrix. statistics_math is about basic statistics math like cusum method. 
+  Kinematics includes essential robotics math tool such as forward kinematics of UR10e, rotation matrix, transformation matrix. Statistics_math is about basic statistics math like cusum method. 
 
 ## Dependencies ##
 * [Eigen3] (http://eigen.tuxfamily.org/index.php?title=Main_Page)
@@ -53,7 +53,7 @@ SDU-Math-Common includes the following functions available:
   
   * calculate_forward_kinematics(int joint_id, std::vector<double> theta)
   
-  It returns transformation_matrix according to current joint value. This function is used to transfrom tool's values from tool's frame to base frame because tool's values that ur_rtde outputs are relative to tool's frame and force torque sensor values that ur_rtde offers are relative to base frame.  
+  It returns transformation_matrix according to current joint value. This function is used to transform tool's values from the tool's frame to the base frame because tool's values that ur_rtde outputs are relative to the tool's frame and force-torque sensor's values that ur_rtde offers are relative to the base frame.  
   
   * rotation_matix_x,y,z (double radian)
   
@@ -84,7 +84,7 @@ For example(kinematics),
   
   * double calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
   
-  It offers collision detection based on force torque value. This function uses cusum method. 
+  It offers collision detection based on force-torque sensor's values. This function uses a cusum method. 
   
 For example(statistics),
 
