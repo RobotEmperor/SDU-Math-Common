@@ -29,7 +29,6 @@ SDU-Math-Common includes the following functions available:
 
     git clone https://github.com/RobotEmperor/SDU-Math-Common.git
     cd sdu_math
-    mkdir build
     cd build
     cmake ..
     make 
