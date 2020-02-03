@@ -11,9 +11,14 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <Eigen/Dense>
+
+int calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit);
+double calculate_mean(double data);
+Eigen::MatrixXd least_square_problem(Eigen::MatrixXd a, Eigen::MatrixXd b); // return X matrixXd
 
 
-double calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit);
+
 
 
 

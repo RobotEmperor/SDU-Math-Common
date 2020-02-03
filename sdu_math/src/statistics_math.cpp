@@ -8,9 +8,9 @@
 #include "sdu_math/statistics_math.h"
 
 
-double calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
+int calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
 {
-  static double detection = 0;
+  static int detection = 0;
   static double s_h = 0;
   static double s_l = 0;
   static double pre_s_h = 0;
@@ -34,8 +34,6 @@ double calculate_cusum(double data, double allowable_slack_gain_k, double high_l
   else
     detection= 0;
 
-  double temp_a;
-  temp_a = sum_h;
 
   if(detection == 1 || detection == -1)
   {
@@ -49,3 +47,54 @@ double calculate_cusum(double data, double allowable_slack_gain_k, double high_l
 
   return detection;
 }
+
+
+Eigen::MatrixXd least_square_problem(Eigen::MatrixXd a, Eigen::MatrixXd b)
+{
+  static Eigen::MatrixXd x;
+  x.resize(a.rows(),b.rows());
+  //x.fill(0);
+
+  if((a.transpose()*a).determinant() != 0)
+  {
+    x = (a.transpose()*a).inverse()*a.transpose()*b;
+  }
+  else
+  {
+    printf("This matrix is not invertible \n");
+  }
+
+  return x;
+  // return X matrixXd
+}
+double calculate_mean(double data)
+{
+  static double pre_result_mean = 0;
+  static double number = 0;
+  static double result_mean = 0;
+
+  number ++;
+
+  result_mean = ((pre_result_mean)*(number-1) + data)/number;
+
+  pre_result_mean = result_mean;
+
+
+
+
+  if(number > 1000)
+  {
+    number = 0;
+  }
+
+  return result_mean;
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+
+
+
