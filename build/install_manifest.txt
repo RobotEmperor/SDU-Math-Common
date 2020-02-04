@@ -1,0 +1,3 @@
+/usr/local/lib/libsdu_math.so
+/usr/local/include/sdu_math/kinematics.h
+/usr/local/include/sdu_math/statistics_math.h

@@ -35,8 +35,15 @@ class Kinematics
 
     Eigen::Matrix4d transformation_result;
 
+    Eigen::MatrixXd jacobian_force_matrix;
+    Eigen::MatrixXd force_matrix;
+
+    Eigen::MatrixXd torque_matrix;
+
     void link_parameter(std::vector<double> theta);
     void calculate_forward_kinematics(int joint_id, std::vector<double> theta);
+    void calculate_jacobian(std::vector<double> theta);
+    void calculate_end_effector_force(std::vector<double> torque);
 
 
     double d_1, a_2, a_3, d_4, d_5, d_6;
