@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC  -Wl,--no-undefined -shared -Wl,-soname,libsdu_math.so -o libsdu_math.so CMakeFiles/sdu_math.dir/sdu_math/src/kinematics.cpp.o CMakeFiles/sdu_math.dir/sdu_math/src/statistics_math.cpp.o 
