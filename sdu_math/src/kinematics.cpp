@@ -31,6 +31,20 @@ Kinematics::Kinematics()
   torque_matrix.resize(6,1);
   torque_matrix.fill(0);
 
+  z0.resize(3,1);
+  z1.resize(3,1);
+  z2.resize(3,1);
+  z3.resize(3,1);
+  z4.resize(3,1);
+  z5.resize(3,1);
+
+  z0.fill(0);
+  z1.fill(0);
+  z2.fill(0);
+  z3.fill(0);
+  z4.fill(0);
+  z5.fill(0);
+
 
   //link parameter
   d_1 = 0.1807;
@@ -98,12 +112,42 @@ void Kinematics::calculate_jacobian(std::vector<double> theta)
   q4 = theta[4];
   q5 = theta[5];
 
+  z0 << 0,
+        0,
+        1;
+
+
+
+  z1 << sin(q0),
+   -cos(q0),
+          0;
+
+
+  z2 << sin(q0),
+   -cos(q0),
+          0;
+
+
+  z3 << sin(q0),
+   -cos(q0),
+          0;
+
+
+  z4 << cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)),
+   cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)),
+                                   sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) - cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2));
+
+
+  z5 << cos(q4)*sin(q0) - sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))),
+   sin(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - cos(q0)*cos(q4),
+                                                    -sin(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)));
+
   jacobian_force_matrix << d_4*cos(q0) - d_5*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) + d_6*(cos(q0)*cos(q4) - sin(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)))) - a_2*cos(q1)*sin(q0) - a_3*cos(q1)*cos(q2)*sin(q0) + a_3*sin(q0)*sin(q1)*sin(q2), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) - a_2*cos(q0)*sin(q1) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) - a_3*cos(q0)*cos(q1)*sin(q2) - a_3*cos(q0)*cos(q2)*sin(q1), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) - a_3*cos(q0)*cos(q1)*sin(q2) - a_3*cos(q0)*cos(q2)*sin(q1), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))), -d_6*(sin(q0)*sin(q4) + cos(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)))), 0,
                            d_5*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) + d_4*sin(q0) + d_6*(cos(q4)*sin(q0) - sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)))) + a_2*cos(q0)*cos(q1) + a_3*cos(q0)*cos(q1)*cos(q2) - a_3*cos(q0)*sin(q1)*sin(q2), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_2*sin(q0)*sin(q1) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))),  d_6*(cos(q0)*sin(q4) + cos(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)))), 0,
                                                                                                                                                                                                                                                                                                                                                                                                    0,                                                                                         a_2*cos(q1) + d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                     -d_6*cos(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))), 0,
-                                                                                                                                                                                                                                                                                                                                                                                                   0,0,0,0,0,0,
-                                                                                                                                                                                                                                                                                                                                                                                                   0,0,0,0,0,0,
-                                                                                                                                                                                                                                                                                                                                                                                                   1,1,1,1,1,1;
+                                                                                                                                                                                                                                                                                                                                                                                                   z0(0,0),z1(0,0),z2(0,0),z3(0,0),z4(0,0),z5(0,0),
+                                                                                                                                                                                                                                                                                                                                                                                                   z0(1,0),z1(1,0),z2(1,0),z3(1,0),z4(1,0),z5(1,0),
+                                                                                                                                                                                                                                                                                                                                                                                                   z0(2,0),z1(2,0),z2(2,0),z3(2,0),z4(2,0),z5(2,0);
 
 
 }
