@@ -79,9 +79,6 @@ double calculate_mean(double data)
 
   pre_result_mean = result_mean;
 
-
-
-
   if(number > 1000)
   {
     number = 0;

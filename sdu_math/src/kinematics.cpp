@@ -64,7 +64,7 @@ void Kinematics::link_parameter(std::vector<double> theta)
 {
 
 }
-void Kinematics::calculate_forward_kinematics(int joint_id, std::vector<double> theta)
+void Kinematics::calculate_forward_kinematics(std::vector<double> theta)
 {
 
   transformation[0] << cos(theta[0]), 0,  sin(theta[0]), 0,
@@ -164,6 +164,14 @@ void Kinematics::calculate_end_effector_force(std::vector<double> torque)
   force_matrix = (jacobian_force_matrix.transpose()).inverse() * torque_matrix;
 }
 
+void Kinematics::set_joint_positions(std::vector<double> input_joint_position)
+{
+  joint_positions = input_joint_position;
+}
+Eigen::Matrix4d Kinematics::get_tf_base_to_tool(Eigen::Matrix4d input_data)
+{
+  return transformation_result*input_data;
+}
 
 Eigen::Matrix3d Kinematics::rotation_matrix_x(double radian)
 {

@@ -21,7 +21,17 @@ class Kinematics
   public:
     Kinematics();
     ~Kinematics();
-    double a ;
+
+    void link_parameter(std::vector<double> theta);
+    void calculate_forward_kinematics(std::vector<double> theta);
+    void calculate_jacobian(std::vector<double> theta);
+    void calculate_end_effector_force(std::vector<double> torque);
+    void set_joint_positions(std::vector<double> input_joint_position);
+
+    Eigen::Matrix4d get_tf_base_to_tool(Eigen::Matrix4d input_data);
+
+  private:
+    double d_1, a_2, a_3, d_4, d_5, d_6;
 
     std::vector<double> joint_positions;
 
@@ -42,27 +52,5 @@ class Kinematics
 
     Eigen::MatrixXd z0,z1,z2,z3,z4,z5;
 
-    void link_parameter(std::vector<double> theta);
-    void calculate_forward_kinematics(int joint_id, std::vector<double> theta);
-    void calculate_jacobian(std::vector<double> theta);
-    void calculate_end_effector_force(std::vector<double> torque);
-
-
-    double d_1, a_2, a_3, d_4, d_5, d_6;
-
-
-
-
-
-
-
-
-
-
-
-
 };
-
-
-
 #endif /* SDU_MATH_SDU_MATH_INCLUDE_SDU_MATH_KINEMATICS_H_ */
