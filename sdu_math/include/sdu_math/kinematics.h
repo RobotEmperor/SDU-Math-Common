@@ -28,7 +28,7 @@ class Kinematics
     void calculate_end_effector_force(std::vector<double> torque);
     void set_joint_positions(std::vector<double> input_joint_position);
 
-    Eigen::Matrix4d get_tf_base_to_tool(Eigen::Matrix4d input_data);
+    Eigen::MatrixXd get_tf_base_to_tool(Eigen::MatrixXd input_data);
 
   private:
     double d_1, a_2, a_3, d_4, d_5, d_6;

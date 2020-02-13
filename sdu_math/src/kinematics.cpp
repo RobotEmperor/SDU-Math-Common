@@ -168,7 +168,7 @@ void Kinematics::set_joint_positions(std::vector<double> input_joint_position)
 {
   joint_positions = input_joint_position;
 }
-Eigen::Matrix4d Kinematics::get_tf_base_to_tool(Eigen::Matrix4d input_data)
+Eigen::MatrixXd Kinematics::get_tf_base_to_tool(Eigen::MatrixXd input_data)
 {
   return transformation_result*input_data;
 }
