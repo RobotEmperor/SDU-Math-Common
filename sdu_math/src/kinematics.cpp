@@ -222,8 +222,6 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
 
   magnitude = sqrt(pow(val_x,2) + pow(val_y,2) + pow(val_z,2));
 
-
-
   if(magnitude == 0)
   {
     printf("magnitude is wrong!! angle returns the previous angle. \n\n");
