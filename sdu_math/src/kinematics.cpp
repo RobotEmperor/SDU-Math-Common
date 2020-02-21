@@ -68,34 +68,34 @@ void Kinematics::calculate_forward_kinematics(std::vector<double> theta)
 {
 
   transformation[0] << cos(theta[0]), 0,  sin(theta[0]), 0,
-                       sin(theta[0]), 0, -cos(theta[0]), 0,
-                       0,1,0,d_1,
-                       0,0,0,1;
+    sin(theta[0]), 0, -cos(theta[0]), 0,
+    0,1,0,d_1,
+    0,0,0,1;
 
   transformation[1] << cos(theta[1]), -sin(theta[1]), 0, a_2*cos(theta[1]),
-                       sin(theta[1]),  cos(theta[1]), 0, a_2*sin(theta[1]),
-                       0,0,1,0,
-                       0,0,0,1;
+    sin(theta[1]),  cos(theta[1]), 0, a_2*sin(theta[1]),
+    0,0,1,0,
+    0,0,0,1;
 
   transformation[2] << cos(theta[2]), -sin(theta[2]), 0, a_3*cos(theta[2]),
-                       sin(theta[2]),  cos(theta[2]), 0, a_3*sin(theta[2]),
-                       0,0,1,0,
-                       0,0,0,1;
+    sin(theta[2]),  cos(theta[2]), 0, a_3*sin(theta[2]),
+    0,0,1,0,
+    0,0,0,1;
 
   transformation[3] << cos(theta[3]), 0,  sin(theta[3]), 0,
-                       sin(theta[3]), 0, -cos(theta[3]), 0,
-                       0,1,0,d_4,
-                       0,0,0,1;
+    sin(theta[3]), 0, -cos(theta[3]), 0,
+    0,1,0,d_4,
+    0,0,0,1;
 
   transformation[4] << cos(theta[4]), 0,-sin(theta[4]), 0,
-                       sin(theta[4]),0,  cos(theta[4]), 0,
-                       0,-1,0,d_5,
-                       0,0,0,1;
+    sin(theta[4]),0,  cos(theta[4]), 0,
+    0,-1,0,d_5,
+    0,0,0,1;
 
   transformation[5] << cos(theta[5]), -sin(theta[5]), 0, 0,
-                       sin(theta[5]),  cos(theta[5]), 0, 0,
-                       0,0,1,d_6,
-                       0,0,0,1;
+    sin(theta[5]),  cos(theta[5]), 0, 0,
+    0,0,1,d_6,
+    0,0,0,1;
 
 
   transformation_result = transformation[0]*transformation[1]*transformation[2]*transformation[3]*transformation[4]*transformation[5];
@@ -113,52 +113,52 @@ void Kinematics::calculate_jacobian(std::vector<double> theta)
   q5 = theta[5];
 
   z0 << 0,
-        0,
-        1;
+    0,
+    1;
 
 
 
   z1 << sin(q0),
-   -cos(q0),
-          0;
+    -cos(q0),
+    0;
 
 
   z2 << sin(q0),
-   -cos(q0),
-          0;
+    -cos(q0),
+    0;
 
 
   z3 << sin(q0),
-   -cos(q0),
-          0;
+    -cos(q0),
+    0;
 
 
   z4 << cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)),
-   cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)),
-                                   sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) - cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2));
+    cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)),
+    sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) - cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2));
 
 
   z5 << cos(q4)*sin(q0) - sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))),
-   sin(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - cos(q0)*cos(q4),
-                                                    -sin(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)));
+    sin(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - cos(q0)*cos(q4),
+    -sin(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)));
 
   jacobian_force_matrix << d_4*cos(q0) - d_5*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) + d_6*(cos(q0)*cos(q4) - sin(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)))) - a_2*cos(q1)*sin(q0) - a_3*cos(q1)*cos(q2)*sin(q0) + a_3*sin(q0)*sin(q1)*sin(q2), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) - a_2*cos(q0)*sin(q1) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) - a_3*cos(q0)*cos(q1)*sin(q2) - a_3*cos(q0)*cos(q2)*sin(q1), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) - a_3*cos(q0)*cos(q1)*sin(q2) - a_3*cos(q0)*cos(q2)*sin(q1), d_5*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1))) + d_6*sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))), -d_6*(sin(q0)*sin(q4) + cos(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)))), 0,
-                           d_5*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) + d_4*sin(q0) + d_6*(cos(q4)*sin(q0) - sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)))) + a_2*cos(q0)*cos(q1) + a_3*cos(q0)*cos(q1)*cos(q2) - a_3*cos(q0)*sin(q1)*sin(q2), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_2*sin(q0)*sin(q1) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))),  d_6*(cos(q0)*sin(q4) + cos(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)))), 0,
-                                                                                                                                                                                                                                                                                                                                                                                                   0,                                                                                         a_2*cos(q1) + d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                     -d_6*cos(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))), 0,
-                                                                                                                                                                                                                                                                                                                                                                                                   z0(0,0),z1(0,0),z2(0,0),z3(0,0),z4(0,0),z5(0,0),
-                                                                                                                                                                                                                                                                                                                                                                                                   z0(1,0),z1(1,0),z2(1,0),z3(1,0),z4(1,0),z5(1,0),
-                                                                                                                                                                                                                                                                                                                                                                                                   z0(2,0),z1(2,0),z2(2,0),z3(2,0),z4(2,0),z5(2,0);
+    d_5*(cos(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)) + sin(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2))) + d_4*sin(q0) + d_6*(cos(q4)*sin(q0) - sin(q4)*(cos(q3)*(cos(q0)*cos(q1)*cos(q2) - cos(q0)*sin(q1)*sin(q2)) - sin(q3)*(cos(q0)*cos(q1)*sin(q2) + cos(q0)*cos(q2)*sin(q1)))) + a_2*cos(q0)*cos(q1) + a_3*cos(q0)*cos(q1)*cos(q2) - a_3*cos(q0)*sin(q1)*sin(q2), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_2*sin(q0)*sin(q1) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))) - a_3*cos(q1)*sin(q0)*sin(q2) - a_3*cos(q2)*sin(q0)*sin(q1), d_6*sin(q4)*(cos(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)) - sin(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0))) - d_5*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1))),  d_6*(cos(q0)*sin(q4) + cos(q4)*(cos(q3)*(sin(q0)*sin(q1)*sin(q2) - cos(q1)*cos(q2)*sin(q0)) + sin(q3)*(cos(q1)*sin(q0)*sin(q2) + cos(q2)*sin(q0)*sin(q1)))), 0,
+    0,                                                                                         a_2*cos(q1) + d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) + a_3*cos(q1)*cos(q2) - a_3*sin(q1)*sin(q2) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                                 d_5*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))) - d_6*sin(q4)*(cos(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2)) - sin(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1))),                                                     -d_6*cos(q4)*(cos(q3)*(cos(q1)*sin(q2) + cos(q2)*sin(q1)) + sin(q3)*(cos(q1)*cos(q2) - sin(q1)*sin(q2))), 0,
+    z0(0,0),z1(0,0),z2(0,0),z3(0,0),z4(0,0),z5(0,0),
+    z0(1,0),z1(1,0),z2(1,0),z3(1,0),z4(1,0),z5(1,0),
+    z0(2,0),z1(2,0),z2(2,0),z3(2,0),z4(2,0),z5(2,0);
 
 
 }
 void Kinematics::calculate_end_effector_force(std::vector<double> torque)
 {
   torque_matrix << torque[0],
-      torque[1],
-      torque[2],
-      torque[3],
-      torque[4],
-      torque[5];
+    torque[1],
+    torque[2],
+    torque[3],
+    torque[4],
+    torque[5];
 
 
   force_matrix = (jacobian_force_matrix.transpose()).inverse() * torque_matrix;
@@ -178,8 +178,8 @@ Eigen::Matrix3d Kinematics::rotation_matrix_x(double radian)
   Eigen::Matrix3d r;
 
   r   << 1, cos(radian), -sin(radian),
-      0, sin(radian),  cos(radian),
-      0,           0,            0;
+    0, sin(radian),  cos(radian),
+    0,           0,            0;
 
   return r;
 
@@ -190,8 +190,8 @@ Eigen::Matrix3d Kinematics::rotation_matrix_y(double radian)
   Eigen::Matrix3d r;
 
   r   <<  cos(radian), 0,  sin(radian),
-      -sin(radian), 1,  cos(radian),
-      0, 0,            0;
+    -sin(radian), 1,  cos(radian),
+    0, 0,            0;
 
   return r;
 
@@ -202,11 +202,70 @@ Eigen::Matrix3d Kinematics::rotation_matrix_z(double radian)
   Eigen::Matrix3d r;
 
   r   << cos(radian), -sin(radian), 0,
-      sin(radian),  cos(radian), 0,
-      0,            0, 1;
+    sin(radian),  cos(radian), 0,
+    0,            0, 1;
 
   return r;
 
+}
+Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, double val_z)
+{
+  static double x = 0;
+  static double y = 0;
+  static double z = 0;
+  static double angle = 0;
+  static double magnitude = 0;
+
+  Eigen::MatrixXd euler_angle; // defines roll pitch yaw
+  euler_angle.resize(3,1);
+  euler_angle.fill(0);
+
+  magnitude = sqrt(pow(val_x,2) + pow(val_y,2) + pow(val_z,2));
+
+
+
+  if(magnitude == 0)
+  {
+    printf("magnitude is wrong!! angle returns the previous angle. \n\n");
+    return euler_angle;
+  }
+
+  x = val_x/magnitude;
+  y = val_y/magnitude;
+  z = val_z/magnitude;
+
+  angle = magnitude;
+
+  double s =sin(angle);
+  double c =cos(angle);
+  double t =1-c;
+
+  //  if axis is not already normalised then uncomment this
+  // double magnitude = Math.sqrt(x*x + y*y + z*z);
+  // if (magnitude==0) throw error;
+  // x /= magnitude;
+  // y /= magnitude;
+  // z /= magnitude;
+
+  if ((x*y*t + z*s) > 0.998) { // north pole singularity detected
+  euler_angle(2,0) = 2*atan2(x*sin(angle/2),cos(angle/2));// yaw heading
+  euler_angle(1,0) = M_PI/2; // pitch attitude
+  euler_angle(0,0) = 0; // roll bank
+  return euler_angle;
+  }
+
+  if ((x*y*t + z*s) < -0.998) { // south pole singularity detected
+  euler_angle(2,0) = -2*atan2(x*sin(angle/2),cos(angle/2));
+  euler_angle(1,0) = -M_PI/2;
+  euler_angle(0,0) = 0;
+  return euler_angle;
+  }
+
+  euler_angle(2,0) = atan2(y * s- x * z * t , 1 - (y*y+ z*z ) * t);
+  euler_angle(1,0) = asin(x * y * t + z * s) ;
+  euler_angle(0,0) = atan2(x * s - y * z * t , 1 - (x*x + z*z) * t);
+
+  return euler_angle;
 }
 
 

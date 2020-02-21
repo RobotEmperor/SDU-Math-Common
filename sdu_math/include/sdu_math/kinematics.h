@@ -29,6 +29,7 @@ class Kinematics
     void set_joint_positions(std::vector<double> input_joint_position);
 
     Eigen::MatrixXd get_tf_base_to_tool(Eigen::MatrixXd input_data);
+    Eigen::MatrixXd get_axis_to_euler_angle(double unit_x, double unit_y, double unit_z);
 
   private:
     double d_1, a_2, a_3, d_4, d_5, d_6;
