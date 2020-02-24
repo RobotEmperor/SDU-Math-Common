@@ -241,9 +241,9 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
   qz = z * sin(magnitude/2);
   qw = cos(magnitude/2);
 
-  euler_angle(0,2) = atan(2.0 * (qx*qy + qz*qw)/(qx*qx - qy*qy - qz*qz + qw*qw));
-  euler_angle(0,0) = atan(2.0 * (qy*qz + qx*qw)/(-qx*qw - qy*qy + qz*qz + qw*qw));
-  euler_angle(0,1) = asin(-2.0 * (qx*qz - qy*qw));
+  euler_angle(2,0) = atan(2.0 * (qx*qy + qz*qw)/(qx*qx - qy*qy - qz*qz + qw*qw));
+  euler_angle(0,0) = atan(2.0 * (qy*qz + qx*qw)/(-qx*qx - qy*qy + qz*qz + qw*qw));
+  euler_angle(1,0) = asin(-2.0 * (qx*qz - qy*qw));
 
   return euler_angle;
 }

@@ -7,8 +7,22 @@
 
 #include "sdu_math/statistics_math.h"
 
+Statistics::Statistics()
+{
 
-int calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
+}
+Statistics::~Statistics()
+{
+
+}
+
+void Statistics::set_dimension(Eigen::MatrixXd data)
+{
+  diff_value_ = data;
+  previous_value_ = data;
+}
+
+int Statistics::calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit)
 {
   static int detection = 0;
   static double s_h = 0;
@@ -49,7 +63,7 @@ int calculate_cusum(double data, double allowable_slack_gain_k, double high_limi
 }
 
 
-Eigen::MatrixXd least_square_problem(Eigen::MatrixXd a, Eigen::MatrixXd b)
+Eigen::MatrixXd Statistics::least_square_problem(Eigen::MatrixXd a, Eigen::MatrixXd b)
 {
   static Eigen::MatrixXd x;
   x.resize(a.rows(),b.rows());
@@ -67,7 +81,7 @@ Eigen::MatrixXd least_square_problem(Eigen::MatrixXd a, Eigen::MatrixXd b)
   return x;
   // return X matrixXd
 }
-double calculate_mean(double data)
+double Statistics::calculate_mean(double data)
 {
   static double pre_result_mean = 0;
   static double number = 0;
@@ -87,7 +101,7 @@ double calculate_mean(double data)
   return result_mean;
 }
 
-double calculate_diff(double value, double control_time)
+double Statistics::calculate_diff(double value, double control_time)
 {
   static double diff_value = 0;
   static double previous_value = 0;
@@ -95,7 +109,17 @@ double calculate_diff(double value, double control_time)
 
   diff_value = (value - previous_value) / control_time;
 
+  previous_value = value;
+
   return diff_value;
+}
+
+Eigen::MatrixXd Statistics::calculate_diff(Eigen::MatrixXd value, double control_time)
+{
+  diff_value_ = (value- previous_value_) / control_time;
+  previous_value_ = value;
+
+  return diff_value_;
 }
 
 
