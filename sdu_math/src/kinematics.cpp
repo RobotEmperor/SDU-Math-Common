@@ -213,7 +213,10 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
   static double x = 0;
   static double y = 0;
   static double z = 0;
-  static double angle = 0;
+  static double qx = 0;
+  static double qy = 0;
+  static double qz = 0;
+  static double qw = 0;
   static double magnitude = 0;
 
   Eigen::MatrixXd euler_angle; // defines roll pitch yaw
@@ -221,6 +224,7 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
   euler_angle.fill(0);
 
   magnitude = sqrt(pow(val_x,2) + pow(val_y,2) + pow(val_z,2));
+
 
   if(magnitude == 0)
   {
@@ -232,39 +236,16 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
   y = val_y/magnitude;
   z = val_z/magnitude;
 
-  angle = magnitude;
+  qx = x * sin(magnitude/2);
+  qy = y * sin(magnitude/2);
+  qz = z * sin(magnitude/2);
+  qw = cos(magnitude/2);
 
-  double s =sin(angle);
-  double c =cos(angle);
-  double t =1-c;
-
-  //  if axis is not already normalised then uncomment this
-  // double magnitude = Math.sqrt(x*x + y*y + z*z);
-  // if (magnitude==0) throw error;
-  // x /= magnitude;
-  // y /= magnitude;
-  // z /= magnitude;
-
-  if ((x*y*t + z*s) > 0.998) { // north pole singularity detected
-  euler_angle(2,0) = 2*atan2(x*sin(angle/2),cos(angle/2));// yaw heading
-  euler_angle(1,0) = M_PI/2; // pitch attitude
-  euler_angle(0,0) = 0; // roll bank
-  return euler_angle;
-  }
-
-  if ((x*y*t + z*s) < -0.998) { // south pole singularity detected
-  euler_angle(2,0) = -2*atan2(x*sin(angle/2),cos(angle/2));
-  euler_angle(1,0) = -M_PI/2;
-  euler_angle(0,0) = 0;
-  return euler_angle;
-  }
-
-  euler_angle(2,0) = atan2(y * s- x * z * t , 1 - (y*y+ z*z ) * t);
-  euler_angle(1,0) = asin(x * y * t + z * s) ;
-  euler_angle(0,0) = atan2(x * s - y * z * t , 1 - (x*x + z*z) * t);
+  euler_angle(0,2) = atan(2.0 * (qx*qy + qz*qw)/(qx*qx - qy*qy - qz*qz + qw*qw));
+  euler_angle(0,0) = atan(2.0 * (qy*qz + qx*qw)/(-qx*qw - qy*qy + qz*qz + qw*qw));
+  euler_angle(0,1) = asin(-2.0 * (qx*qz - qy*qw));
 
   return euler_angle;
 }
-
 
 #endif /* SDU_MATH_SDU_MATH_SRC_KINEMATICS_CPP_ */

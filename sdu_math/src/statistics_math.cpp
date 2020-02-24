@@ -87,6 +87,17 @@ double calculate_mean(double data)
   return result_mean;
 }
 
+double calculate_diff(double value, double control_time)
+{
+  static double diff_value = 0;
+  static double previous_value = 0;
+
+
+  diff_value = (value - previous_value) / control_time;
+
+  return diff_value;
+}
+
 
 
 
