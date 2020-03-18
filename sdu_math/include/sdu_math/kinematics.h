@@ -24,19 +24,27 @@ class Kinematics
 
     void link_parameter(std::vector<double> theta);
     void calculate_forward_kinematics(std::vector<double> theta);
+    void calculate_inverse_kinematics(std::vector<double> desired_pose);
     void calculate_jacobian(std::vector<double> theta);
     void calculate_end_effector_force(std::vector<double> torque);
+
     void set_joint_positions(std::vector<double> input_joint_position);
 
-    Eigen::MatrixXd get_tf_base_to_tool(Eigen::MatrixXd input_data);
-    Eigen::MatrixXd get_axis_to_euler_angle(double unit_x, double unit_y, double unit_z);
+    Eigen::Matrix4d get_tf_base_to_tool();
+    Eigen::MatrixXd get_axis_to_euler_angle(double val_x, double val_y, double val_z);
+    Eigen::Matrix3d get_axis_to_rotation_matrix(double val_x, double val_y, double val_z);
+    std::vector<double> get_ik_joint_results();
+
+    Eigen::MatrixXd tf_base_to_tool(Eigen::MatrixXd input_data);
+    Eigen::Matrix4d transformation_matrix(double alpha, double a, double d, double theta);
 
   private:
     double d_1, a_2, a_3, d_4, d_5, d_6;
 
     std::vector<double> joint_positions;
+    std::vector<double> joint_results;
 
-    std::vector<Eigen::MatrixXd> transformation;
+    std::vector<Eigen::Matrix4d> transformation;
 
     Eigen::MatrixXd temp_data;
 
