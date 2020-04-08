@@ -29,14 +29,18 @@ class Kinematics
     void calculate_end_effector_force(std::vector<double> torque);
 
     void set_joint_positions(std::vector<double> input_joint_position);
+    void set_dh_parameter(double d1,double a2,double a3,double d4,double d5,double d6);
 
     Eigen::Matrix4d get_tf_base_to_tool();
+    Eigen::MatrixXd get_rotation_base_to_tool();
     Eigen::MatrixXd get_axis_to_euler_angle(double val_x, double val_y, double val_z);
     Eigen::Matrix3d get_axis_to_rotation_matrix(double val_x, double val_y, double val_z);
     std::vector<double> get_ik_joint_results();
 
     Eigen::MatrixXd tf_base_to_tool(Eigen::MatrixXd input_data);
     Eigen::Matrix4d transformation_matrix(double alpha, double a, double d, double theta);
+    Eigen::Matrix4d desired_transformation_matrix(double x, double y, double z, double roll, double pitch, double yaw);
+    Eigen::Matrix4d desired_rotation_matrix(double roll, double pitch, double yaw);
 
   private:
     double d_1, a_2, a_3, d_4, d_5, d_6;

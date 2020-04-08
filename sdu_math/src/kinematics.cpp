@@ -274,6 +274,15 @@ void Kinematics::set_joint_positions(std::vector<double> input_joint_position)
 {
   joint_positions = input_joint_position;
 }
+void Kinematics::set_dh_parameter(double d1,double a2,double a3,double d4,double d5,double d6)
+{
+  d_1 = d1;
+  a_2 = a2;
+  a_3 = a3;
+  d_4 = d4;
+  d_5 = d5;
+  d_6 = d6;
+}
 Eigen::MatrixXd Kinematics::tf_base_to_tool(Eigen::MatrixXd input_data)
 {
   return transformation_result*input_data;
@@ -296,8 +305,8 @@ Eigen::Matrix3d Kinematics::rotation_matrix_y(double radian)
   Eigen::Matrix3d r;
 
   r   <<  cos(radian), 0,  sin(radian),
-      -sin(radian), 1,  cos(radian),
-      0, 0,            0;
+           0, 1,  0,
+      -sin(radian), 0,     cos(radian);
 
   return r;
 
@@ -405,6 +414,10 @@ Eigen::Matrix4d Kinematics::get_tf_base_to_tool()
 
   return t;
 }
+Eigen::MatrixXd Kinematics::get_rotation_base_to_tool()
+{
+  return transformation_result.block<2,2>(0,0);
+}
 std::vector<double> Kinematics::get_ik_joint_results()
 {
   std::vector<double> j;
@@ -413,6 +426,41 @@ std::vector<double> Kinematics::get_ik_joint_results()
   j = joint_results;
 
   return j;
+}
+Eigen::Matrix4d Kinematics::desired_rotation_matrix(double roll, double pitch, double yaw)
+{
+  static Eigen::Matrix4d m_roll;
+  static Eigen::Matrix4d m_pitch;
+  static Eigen::Matrix4d m_yaw;
+
+  m_roll << 1, cos(roll), -sin(roll), 0,
+            0, sin(roll),  cos(roll), 0,
+            0,         0,          0, 0,
+            0,         0,          0, 1;
+
+  m_yaw   << cos(yaw), -sin(yaw), 0,0,
+             sin(yaw),  cos(yaw), 0,0,
+             0,                0, 1,0,
+             0,                0, 0,1;
+
+  m_pitch  <<cos(pitch), 0,  sin(pitch),0,
+                      0, 1,           0,0,
+            -sin(pitch), 0,  cos(pitch),0,
+                      0, 0,           0,1;
+
+  return m_yaw*m_pitch*m_roll;
+}
+
+Eigen::Matrix4d Kinematics::desired_transformation_matrix(double x, double y, double z, double roll, double pitch, double yaw)
+{
+  static Eigen::Matrix4d tf;
+
+  tf = desired_rotation_matrix(roll, pitch, yaw);
+  tf(0,3) = x;
+  tf(1,3) = y;
+  tf(2,3) = z;
+
+  return tf;
 }
 
 #endif /* SDU_MATH_SDU_MATH_SRC_KINEMATICS_CPP_ */
