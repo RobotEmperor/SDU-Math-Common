@@ -30,11 +30,16 @@ class Kinematics
 
     void set_joint_positions(std::vector<double> input_joint_position);
     void set_dh_parameter(double d1,double a2,double a3,double d4,double d5,double d6);
+    void set_a_offset_parameter(double a1,double a2,double a3,double a4,double a5,double a6);
+    void set_d_offset_parameter(double d1,double d2,double d3,double d4,double d5,double a6);
+    void set_al_offset_parameter(double al1,double al2,double al3,double al4,double al5,double al6);
+
 
     Eigen::Matrix4d get_tf_base_to_tool();
-    Eigen::MatrixXd get_rotation_base_to_tool();
+    Eigen::Matrix3d get_rotation_base_to_tool();
     Eigen::MatrixXd get_axis_to_euler_angle(double val_x, double val_y, double val_z);
     Eigen::Matrix3d get_axis_to_rotation_matrix(double val_x, double val_y, double val_z);
+    Eigen::MatrixXd get_rotation_matrix_to_axis(Eigen::Matrix3d r_m);
     std::vector<double> get_ik_joint_results();
 
     Eigen::MatrixXd tf_base_to_tool(Eigen::MatrixXd input_data);
@@ -43,7 +48,12 @@ class Kinematics
     Eigen::Matrix4d desired_rotation_matrix(double roll, double pitch, double yaw);
 
   private:
+    double offset_d_1, offset_d_2, offset_d_3, offset_d_4, offset_d_5, offset_d_6;
+    double offset_a_1, offset_a_2, offset_a_3, offset_a_4, offset_a_5, offset_a_6;
+    double offset_al_1, offset_al_2, offset_al_3, offset_al_4, offset_al_5, offset_al_6;
+
     double d_1, a_2, a_3, d_4, d_5, d_6;
+
 
     std::vector<double> joint_positions;
     std::vector<double> joint_results;
