@@ -10,7 +10,6 @@
 
 #include "sdu_math/kinematics.h"
 
-
 Kinematics::Kinematics()
 {
   temp_data.resize(4,1);
@@ -46,15 +45,6 @@ Kinematics::Kinematics()
   z4.fill(0);
   z5.fill(0);
 
-
-  //link parameter ur10e
-  //  d_1 = 0.1807;
-  //  a_2 = -0.6127;
-  //  a_3 = -0.57155;
-  //  d_4 = 0.17415;
-  //  d_5 = 0.11985;
-  //  d_6 = 0.11655;
-
   offset_d_1 = 0;
   offset_d_2 = 0;
   offset_d_3 = 0;
@@ -76,6 +66,13 @@ Kinematics::Kinematics()
   offset_al_5 = 0;
   offset_al_6 = 0;
 
+  offset_theta_1 = 0;
+  offset_theta_2 = 0;
+  offset_theta_3 = 0;
+  offset_theta_4 = 0;
+  offset_theta_5 = 0;
+  offset_theta_6 = 0;
+
   d_1 = 0;
   a_2 = 0;
   a_3 = 0;
@@ -88,60 +85,14 @@ Kinematics::~Kinematics()
 {
 
 }
-void Kinematics::link_parameter(std::vector<double> theta)
-{
-}
 void Kinematics::calculate_forward_kinematics(std::vector<double> theta)
 {
-
-  //    transformation[0] << cos(theta[0]), 0,  sin(theta[0]), 0,
-  //      sin(theta[0]), 0, -cos(theta[0]), 0,
-  //      0,1,0,d_1,
-  //      0,0,0,1;
-  //
-  //    transformation[1] << cos(theta[1]), -sin(theta[1]), 0, a_2*cos(theta[1]),
-  //      sin(theta[1]),  cos(theta[1]), 0, a_2*sin(theta[1]),
-  //      0,0,1,0,
-  //      0,0,0,1;
-  //
-  //    transformation[2] << cos(theta[2]), -sin(theta[2]), 0, a_3*cos(theta[2]),
-  //      sin(theta[2]),  cos(theta[2]), 0, a_3*sin(theta[2]),
-  //      0,0,1,0,
-  //      0,0,0,1;
-  //
-  //    transformation[3] << cos(theta[3]), 0,  sin(theta[3]), 0,
-  //      sin(theta[3]), 0, -cos(theta[3]), 0,
-  //      0,1,0,d_4,
-  //      0,0,0,1;
-  //
-  //    transformation[4] << cos(theta[4]), 0,-sin(theta[4]), 0,
-  //      sin(theta[4]),0,  cos(theta[4]), 0,
-  //      0,-1,0,d_5,
-  //      0,0,0,1;
-  //
-  //    transformation[5] << cos(theta[5]), -sin(theta[5]), 0, 0,
-  //      sin(theta[5]),  cos(theta[5]), 0, 0,
-  //      0,0,1,d_6,
-  //      0,0,0,1;
-
-
-  //  transformation[0] = transformation_matrix(0,0,d_1,theta[0]);
-  //  transformation[1] = transformation_matrix(M_PI/2,0,0,theta[1]);
-  //  transformation[2] = transformation_matrix(0,a_2,0,theta[2]);
-  //
-  //  transformation[3] = transformation_matrix(0,a_3,d_4,theta[3]);
-  //  transformation[4] = transformation_matrix(M_PI/2,0,d_5,theta[4]);
-  //  transformation[5] = transformation_matrix(-M_PI/2,0,d_6,theta[5]);
-
-  transformation[0] = transformation_matrix(M_PI/2+offset_al_1, offset_a_1, d_1+offset_d_1 ,theta[0]);
-  transformation[1] = transformation_matrix(offset_al_2, a_2+offset_a_2, offset_d_2 ,theta[1]);
-  transformation[2] = transformation_matrix(offset_al_3, a_3+offset_a_3, offset_d_3 ,theta[2]);
-
-  transformation[3] = transformation_matrix(M_PI/2+offset_al_4, offset_a_4, d_4+offset_d_4 ,theta[3]);
-  transformation[4] = transformation_matrix(-M_PI/2+offset_al_5, offset_a_5, d_5+offset_d_5 ,theta[4]);
-  transformation[5] = transformation_matrix(offset_al_6, offset_a_6, d_6+offset_d_6 ,theta[5]);
-
-
+  transformation[0] = transformation_matrix(M_PI/2+offset_al_1, offset_a_1, d_1+offset_d_1 ,theta[0]+offset_theta_1);
+  transformation[1] = transformation_matrix(offset_al_2, a_2+offset_a_2, offset_d_2 ,theta[1]+offset_theta_2);
+  transformation[2] = transformation_matrix(offset_al_3, a_3+offset_a_3, offset_d_3 ,theta[2]+offset_theta_3);
+  transformation[3] = transformation_matrix(M_PI/2+offset_al_4, offset_a_4, d_4+offset_d_4 ,theta[3]+offset_theta_4);
+  transformation[4] = transformation_matrix(-M_PI/2+offset_al_5, offset_a_5, d_5+offset_d_5 ,theta[4]+offset_theta_5);
+  transformation[5] = transformation_matrix(offset_al_6, offset_a_6, d_6+offset_d_6 ,theta[5]+offset_theta_6);
 
   transformation_result = transformation[0]*transformation[1]*transformation[2]*transformation[3]*transformation[4]*transformation[5];
 }
@@ -349,59 +300,27 @@ void Kinematics::set_al_offset_parameter(double al1,double al2,double al3,double
   offset_al_5 = al5;
   offset_al_6 = al6;
 }
+void Kinematics::set_theta_offset_parameter(double theta1,double theta2,double theta3,double theta4,double theta5,double theta6)
+{
+  offset_theta_1 = theta1;
+  offset_theta_2 = theta2;
+  offset_theta_3 = theta3;
+  offset_theta_4 = theta4;
+  offset_theta_5 = theta5;
+  offset_theta_6 = theta6;
+}
 Eigen::MatrixXd Kinematics::tf_base_to_tool(Eigen::MatrixXd input_data)
 {
   return transformation_result*input_data;
-}
-
-Eigen::Matrix3d Kinematics::rotation_matrix_x(double radian)
-{
-  Eigen::Matrix3d r;
-
-  r   << 1, cos(radian), -sin(radian),
-      0, sin(radian),  cos(radian),
-      0,           0,            0;
-
-  return r;
-
-
-}
-Eigen::Matrix3d Kinematics::rotation_matrix_y(double radian)
-{
-  Eigen::Matrix3d r;
-
-  r   <<  cos(radian), 0,  sin(radian),
-      0, 1,  0,
-      -sin(radian), 0,     cos(radian);
-
-  return r;
-
-
-}
-Eigen::Matrix3d Kinematics::rotation_matrix_z(double radian)
-{
-  Eigen::Matrix3d r;
-
-  r   << cos(radian), -sin(radian), 0,
-      sin(radian),  cos(radian), 0,
-      0,            0, 1;
-
-  return r;
 }
 Eigen::Matrix4d Kinematics::transformation_matrix(double alpha, double a, double d, double theta)
 {
   Eigen::Matrix4d t;
 
-//  t << cos(theta), -sin(theta), 0 , a,
-//      sin(theta)*cos(alpha), cos(theta)*cos(alpha), -sin(alpha), -sin(alpha)*d,
-//      sin(theta)*sin(alpha), cos(theta)*sin(alpha), cos(alpha), cos(alpha)*d,
-//      0,0,0,1;
-
-    t << cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha) , a*cos(theta),
-        sin(theta), cos(theta)*cos(alpha), -cos(theta)*sin(alpha),   a*sin(theta),
-        0, sin(alpha), cos(alpha), d,
-        0,0,0,1;
-
+  t << cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha) , a*cos(theta),
+      sin(theta), cos(theta)*cos(alpha), -cos(theta)*sin(alpha),   a*sin(theta),
+      0, sin(alpha), cos(alpha), d,
+      0,0,0,1;
   return t;
 }
 Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, double val_z)
@@ -484,90 +403,6 @@ Eigen::MatrixXd Kinematics::get_rotation_matrix_to_axis(Eigen::Matrix3d r_m)
   axis_angle.fill(0);
 
   double angle,x,y,z; // variables for result
-  //  double epsilon = 0.0001; // margin to allow for rounding errors
-  //  double epsilon2 = 0.001; // margin to distinguish between 0 and 180 degrees
-  //  // optional check that input is pure rotation, 'isRotationMatrix' is defined at:
-  //  // https://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/
-  //  //assert isRotationMatrix(m) : "not valid rotation matrix" ;// for debugging
-  //  if ((abs(r_m(0,1)-r_m(1,0))< epsilon)
-  //      && (abs(r_m(0,2)-r_m(2,0))< epsilon)
-  //      && (abs(r_m(1,2)-r_m(2,1))< epsilon))
-  //  {
-  //    // singularity found
-  //    // first check for identity matrix which must have +1 for all terms
-  //    //  in leading diagonaland zero in other terms
-  //    if ((abs(r_m(0,1)+r_m(1,0)) < epsilon2)
-  //        && (abs(r_m(0,2)+r_m(2,0)) < epsilon2)
-  //        && (abs(r_m(1,2)+r_m(2,1)) < epsilon2)
-  //        && (abs(r_m(0,0)+r_m(1,1)+r_m(2,2)-3) < epsilon2))
-  //    {
-  //      // this singularity is identity matrix so angle = 0
-  //      axis_angle(0,0) = 0;
-  //      axis_angle(1,0) = 1;
-  //      axis_angle(2,0) = 0;
-  //      axis_angle(3,0) = 0;
-  //
-  //      return axis_angle; // zero angle, arbitrary axis
-  //    }
-  //    // otherwise this singularity is angle = 180
-  //    angle = M_PI;
-  //    double xx = (r_m(0,0)+1)/2;
-  //    double yy = (r_m(1,1)+1)/2;
-  //    double zz = (r_m(2,2)+1)/2;
-  //    double xy = (r_m(0,1)+r_m(1,0))/4;
-  //    double xz = (r_m(0,2)+r_m(2,0))/4;
-  //    double yz = (r_m(1,2)+r_m(2,1))/4;
-  //    if ((xx > yy) && (xx > zz)) { // m[0][0] is the largest diagonal term
-  //      if (xx< epsilon) {
-  //        x = 0;
-  //        y = 0.7071;
-  //        z = 0.7071;
-  //      } else {
-  //        x = sqrt(xx);
-  //        y = xy/x;
-  //        z = xz/x;
-  //      }
-  //    } else if (yy > zz) { // m[1][1] is the largest diagonal term
-  //      if (yy< epsilon) {
-  //        x = 0.7071;
-  //        y = 0;
-  //        z = 0.7071;
-  //      } else {
-  //        y = sqrt(yy);
-  //        x = xy/y;
-  //        z = yz/y;
-  //      }
-  //    } else { // m[2][2] is the largest diagonal term so base result on this
-  //      if (zz< epsilon) {
-  //        x = 0.7071;
-  //        y = 0.7071;
-  //        z = 0;
-  //      } else {
-  //        z = sqrt(zz);
-  //        x = xz/z;
-  //        y = yz/z;
-  //      }
-  //    }
-  //    axis_angle(0,0) = angle;
-  //    axis_angle(1,0) = x;
-  //    axis_angle(2,0) = y;
-  //    axis_angle(3,0) = z;
-  //
-  //    return axis_angle; // return 180 deg rotation
-  //  }
-  //  // as we have reached here there are no singularities so we can handle normally
-  //  double s = sqrt(pow((r_m(2,1) - r_m(1,2)),2)
-  //      +pow((r_m(0,2) - r_m(2,0)),2)
-  //      +pow((r_m(1,0) - r_m(0,1)),2)); // used to normalise
-  //  if (abs(s) < 0.001) s=1;
-  //  // prevent divide by zero, should not happen if matrix is orthogonal and should be
-  //  // caught by singularity test above, but I've left it in just in case
-  //  angle = acos(( r_m(0,0) + r_m(1,1) + r_m(2,2) - 1)/2);
-  //  x = (r_m(2,1) - r_m(1,2))/s;
-  //  y = (r_m(0,2) - r_m(2,0))/s;
-  //  z = (r_m(1,0) - r_m(0,1))/s;
-
-
   double qw,qx,qy,qz;
 
   qw = sqrt(1 + r_m(0,0) + r_m(1,1) + r_m(2,2)) /2;
@@ -581,9 +416,9 @@ Eigen::MatrixXd Kinematics::get_rotation_matrix_to_axis(Eigen::Matrix3d r_m)
   z = qz / sqrt(1-qw*qw);
 
   axis_angle(0,0) = angle;
-  axis_angle(1,0) = x;
-  axis_angle(2,0) = y;
-  axis_angle(3,0) = z;
+  axis_angle(1,0) = x*angle;
+  axis_angle(2,0) = y*angle;
+  axis_angle(3,0) = z*angle;
 
   return axis_angle;
 }
@@ -609,12 +444,7 @@ Eigen::Matrix3d Kinematics::get_rotation_base_to_tool()
 }
 std::vector<double> Kinematics::get_ik_joint_results()
 {
-  std::vector<double> j;
-  j.resize(6);
-
-  j = joint_results;
-
-  return j;
+  return joint_results;
 }
 Eigen::Matrix4d Kinematics::desired_rotation_matrix(double roll, double pitch, double yaw)
 {
@@ -650,6 +480,40 @@ Eigen::Matrix4d Kinematics::desired_transformation_matrix(double x, double y, do
   tf(2,3) = z;
 
   return tf;
+}
+Eigen::Matrix3d Kinematics::rotation_matrix_x(double radian)
+{
+  Eigen::Matrix3d r;
+
+  r   << 1, cos(radian), -sin(radian),
+      0, sin(radian),  cos(radian),
+      0,           0,            0;
+
+  return r;
+
+
+}
+Eigen::Matrix3d Kinematics::rotation_matrix_y(double radian)
+{
+  Eigen::Matrix3d r;
+
+  r   <<  cos(radian), 0,  sin(radian),
+      0, 1,  0,
+      -sin(radian), 0,     cos(radian);
+
+  return r;
+
+
+}
+Eigen::Matrix3d Kinematics::rotation_matrix_z(double radian)
+{
+  Eigen::Matrix3d r;
+
+  r   << cos(radian), -sin(radian), 0,
+      sin(radian),  cos(radian), 0,
+      0,            0, 1;
+
+  return r;
 }
 
 
