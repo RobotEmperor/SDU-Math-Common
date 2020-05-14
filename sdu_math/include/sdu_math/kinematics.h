@@ -40,12 +40,14 @@ class Kinematics
     Eigen::Matrix3d get_axis_to_rotation_matrix(double val_x, double val_y, double val_z);
     Eigen::MatrixXd get_axis_to_euler_angle(double val_x, double val_y, double val_z);
     Eigen::MatrixXd get_rotation_matrix_to_axis(Eigen::Matrix3d r_m);
+    Eigen::MatrixXd get_rotation_matrix_to_euler(Eigen::Matrix3d r_m);
     std::vector<double> get_ik_joint_results();
 
     Eigen::MatrixXd tf_base_to_tool(Eigen::MatrixXd input_data);
     Eigen::Matrix4d transformation_matrix(double alpha, double a, double d, double theta);
     Eigen::Matrix4d desired_transformation_matrix(double x, double y, double z, double roll, double pitch, double yaw);
     Eigen::Matrix4d desired_rotation_matrix(double roll, double pitch, double yaw);
+    Eigen::MatrixXd desired_rotation_matrix_xd(double roll, double pitch, double yaw);
 
   private:
     double offset_d_1, offset_d_2, offset_d_3, offset_d_4, offset_d_5, offset_d_6;

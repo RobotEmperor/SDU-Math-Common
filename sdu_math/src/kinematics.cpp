@@ -87,6 +87,16 @@ Kinematics::~Kinematics()
 }
 void Kinematics::calculate_forward_kinematics(std::vector<double> theta)
 {
+
+  //  transformation[0] = transformation_matrix(0,0,d_1,theta[0]);
+  //  transformation[1] = transformation_matrix(M_PI/2,0,0,theta[1]);
+  //  transformation[2] = transformation_matrix(0,a_2,0,theta[2]);
+  //
+  //  transformation[3] = transformation_matrix(0,a_3,d_4,theta[3]);
+  //  transformation[4] = transformation_matrix(M_PI/2,0,d_5,theta[4]);
+  //  transformation[5] = transformation_matrix(-M_PI/2,0,d_6,theta[5]);
+
+
   transformation[0] = transformation_matrix(M_PI/2+offset_al_1, offset_a_1, d_1+offset_d_1 ,theta[0]+offset_theta_1);
   transformation[1] = transformation_matrix(offset_al_2, a_2+offset_a_2, offset_d_2 ,theta[1]+offset_theta_2);
   transformation[2] = transformation_matrix(offset_al_3, a_3+offset_a_3, offset_d_3 ,theta[2]+offset_theta_3);
@@ -158,7 +168,7 @@ void Kinematics::calculate_inverse_kinematics(std::vector<double> desired_pose)
 
   p_0_5 = desired_tf * temp_d6;
 
-  theta_1 = atan2(p_0_5(1,0),p_0_5(0,0)) + acos(d_4/sqrt(pow(p_0_5(1,0),2)+ pow(p_0_5(0,0),2))) + M_PI/2; // two solution +- acos
+  theta_1 = atan2(p_0_5(1,0),p_0_5(0,0)) - acos(d_4/sqrt(pow(p_0_5(1,0),2)+ pow(p_0_5(0,0),2))) + M_PI/2; // two solution +- acos
 
   theta_5 = acos((desired_tf(0,3)*sin(theta_1) - desired_tf(1,3)*cos(theta_1) - d_4)/d_6); // // two solution +- acos
 
@@ -173,12 +183,14 @@ void Kinematics::calculate_inverse_kinematics(std::vector<double> desired_pose)
 
   theta_6 = atan2(temp_y, temp_x);
 
+
   if(transformation_matrix(0,0,d_1,theta_1).determinant() == 0 || (transformation_matrix(M_PI/2,0,d_5,theta_5) * transformation_matrix(-M_PI/2,0,d_6,theta_6)).determinant() == 0)
     return;
 
   tf_1_4 = transformation_matrix(0,0,d_1,theta_1).inverse() * desired_tf *(transformation_matrix(M_PI/2,0,d_5,theta_5) * transformation_matrix(-M_PI/2,0,d_6,theta_6)).inverse();
 
-  theta_3 = - acos((pow(sqrt(pow(tf_1_4(2,3),2) + pow(tf_1_4(0,3),2)),2) - pow(a_2,2)- pow(a_3,2)) / (2*a_2*a_3));// two solution + - acos
+  theta_3 =  - acos((pow(sqrt(pow(tf_1_4(2,3),2) + pow(tf_1_4(0,3),2)),2) - pow(a_2,2)- pow(a_3,2)) / (2*a_2*a_3));// two solution + - acos
+
 
   theta_2 = atan2(-tf_1_4(2,3), -tf_1_4(0,3)) - asin((-a_3*sin(theta_3))/sqrt(pow(tf_1_4(2,3),2) + pow(tf_1_4(0,3),2)));
 
@@ -317,10 +329,17 @@ Eigen::Matrix4d Kinematics::transformation_matrix(double alpha, double a, double
 {
   Eigen::Matrix4d t;
 
+  //  t << cos(theta), -sin(theta), 0 , a,
+  //        sin(theta)*cos(alpha), cos(theta)*cos(alpha), -sin(alpha), -sin(alpha)*d,
+  //        sin(theta)*sin(alpha), cos(theta)*sin(alpha), cos(alpha), cos(alpha)*d,
+  //        0,0,0,1;
+
   t << cos(theta), -sin(theta)*cos(alpha), sin(theta)*sin(alpha) , a*cos(theta),
       sin(theta), cos(theta)*cos(alpha), -cos(theta)*sin(alpha),   a*sin(theta),
       0, sin(alpha), cos(alpha), d,
       0,0,0,1;
+
+
   return t;
 }
 Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, double val_z)
@@ -340,25 +359,33 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
 
   magnitude = sqrt(pow(val_x,2) + pow(val_y,2) + pow(val_z,2));
 
+  qx = val_x * sin(magnitude/2);
+  qy = val_y * sin(magnitude/2);
+  qz = val_z * sin(magnitude/2);
+  qw = cos(magnitude/2);
 
-  if(magnitude == 0)
-  {
-    //printf("magnitude is wrong!! angle returns the previous angle. \n\n");
+  double test = qx*qy + qz*qw;
+
+  if (test > 0.499) { // singularity at north pole
+    euler_angle(2,0) = 2 * atan2(qx,qw); //yaw
+    euler_angle(1,0) = M_PI/2; // pitch
+    euler_angle(0,0) = 0; // roll
+    return euler_angle;
+  }
+  if (test < -0.499) { // singularity at south pole
+    euler_angle(2,0) = -2 * atan2(qx,qw);
+    euler_angle(1,0) = - M_PI/2;
+    euler_angle(0,0) = 0;
     return euler_angle;
   }
 
-  x = val_x/magnitude;
-  y = val_y/magnitude;
-  z = val_z/magnitude;
+  double sqx = qx*qx;
+  double sqy = qy*qy;
+  double sqz = qz*qz;
+  euler_angle(2,0) = atan2(2*qy*qw-2*qx*qz , 1 - 2*sqy - 2*sqz);
+  euler_angle(1,0) = asin(2*test);
+  euler_angle(0,0) = atan2(2*qx*qw-2*qy*qz , 1 - 2*sqx - 2*sqz);
 
-  qx = x * sin(magnitude/2);
-  qy = y * sin(magnitude/2);
-  qz = z * sin(magnitude/2);
-  qw = cos(magnitude/2);
-
-  euler_angle(2,0) = atan(2.0 * (qx*qy + qz*qw)/(qx*qx - qy*qy - qz*qz + qw*qw));
-  euler_angle(0,0) = atan(2.0 * (qy*qz + qx*qw)/(-qx*qx - qy*qy + qz*qz + qw*qw));
-  euler_angle(1,0) = asin(-2.0 * (qx*qz - qy*qw));
 
   return euler_angle;
 }
@@ -405,10 +432,54 @@ Eigen::MatrixXd Kinematics::get_rotation_matrix_to_axis(Eigen::Matrix3d r_m)
   double angle,x,y,z; // variables for result
   double qw,qx,qy,qz;
 
-  qw = sqrt(1 + r_m(0,0) + r_m(1,1) + r_m(2,2)) /2;
-  qx = (r_m(2,1) - r_m(1,2))/( 4 *qw);
-  qy = (r_m(0,2) - r_m(2,0))/( 4 *qw);
-  qz = (r_m(1,0) - r_m(0,1))/( 4 *qw);
+  double tr = r_m(0,0) + r_m(1,1) + r_m(2,2);
+
+  if (tr > 0)
+  {
+    double S = sqrt(tr+1.0) * 2; // S=4*qw
+    qw = 0.25 * S;
+    qx = (r_m(2,1) - r_m(1,2)) / S;
+    qy = (r_m(0,2) - r_m(2,0)) / S;
+    qz = (r_m(1,0) - r_m(0,1)) / S;
+  }
+  else if ((r_m(0,0) > r_m(1,1))&(r_m(0,0) > r_m(2,2)))
+  {
+    double S = sqrt(1.0 + r_m(0,0) - r_m(1,1) - r_m(2,2)) * 2; // S=4*qx
+    qw = (r_m(2,1) - r_m(1,2)) / S;
+    qx = 0.25 * S;
+    qy = (r_m(0,1) + r_m(1,0)) / S;
+    qz = (r_m(0,2) + r_m(2,0)) / S;
+  }
+  else if (r_m(1,1) > r_m(2,2)) {
+    double S = sqrt(1.0 + r_m(1,1) - r_m(0,0) - r_m(2,2)) * 2; // S=4*qy
+    qw = (r_m(0,2) - r_m(2,0)) / S;
+    qx = (r_m(0,1) + r_m(1,0)) / S;
+    qy = 0.25 * S;
+    qz = (r_m(1,2) + r_m(2,1)) / S;
+  }
+  else
+  {
+    double S = sqrt(1.0 + r_m(2,2) - r_m(0,0) - r_m(1,1)) * 2; // S=4*qz
+    qw = (r_m(1,0) - r_m(0,1)) / S;
+    qx = (r_m(0,2) + r_m(2,0)) / S;
+    qy = (r_m(1,2) + r_m(2,1)) / S;
+    qz = 0.25 * S;
+  }
+
+  if (sqrt(1-qw*qw) < 0.001)
+  { // test to avoid divide by zero, s is always positive due to sqrt
+    // if s close to zero then direction of axis not important
+    x = qx; // if it is important that axis is normalised then replace with x=1; y=z=0;
+    y = qy;
+    z = qz;
+
+    axis_angle(0,0) = 0;
+    axis_angle(1,0) = x *  2 * acos(qw);
+    axis_angle(2,0) = y *  2 * acos(qw);
+    axis_angle(3,0) = z *  2 * acos(qw);
+
+    return axis_angle;
+  }
 
   angle = 2 * acos(qw);
   x = qx / sqrt(1-qw*qw);
@@ -421,6 +492,30 @@ Eigen::MatrixXd Kinematics::get_rotation_matrix_to_axis(Eigen::Matrix3d r_m)
   axis_angle(3,0) = z*angle;
 
   return axis_angle;
+}
+Eigen::MatrixXd Kinematics::get_rotation_matrix_to_euler(Eigen::Matrix3d r_m)
+{
+  static Eigen::MatrixXd euler_angle;
+  euler_angle.resize(3,1);
+  euler_angle.fill(0);
+
+  if (r_m(1,0) > 0.998) { // singularity at north pole
+    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
+    euler_angle(1,0) = M_PI/2;
+    euler_angle(0,0)= 0;
+    return euler_angle;
+  }
+  if (r_m(1,0) < -0.998) { // singularity at south pole
+    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
+    euler_angle(1,0) = -M_PI/2;
+    euler_angle(0,0) = 0;
+    return euler_angle;
+  }
+  euler_angle(2,0) =atan2(-r_m(2,0),r_m(0,0));
+  euler_angle(0,0) =atan2(-r_m(1,2),r_m(1,1));
+  euler_angle(1,0) =asin(r_m(1,0));
+
+  return euler_angle;
 }
 Eigen::Matrix4d Kinematics::get_tf_base_to_tool()
 {
@@ -469,6 +564,30 @@ Eigen::Matrix4d Kinematics::desired_rotation_matrix(double roll, double pitch, d
 
   return m_yaw*m_pitch*m_roll;
 }
+Eigen::MatrixXd Kinematics::desired_rotation_matrix_xd(double roll, double pitch, double yaw)
+{
+  static Eigen::MatrixXd m_roll;
+  static Eigen::MatrixXd m_pitch;
+  static Eigen::MatrixXd m_yaw;
+  m_roll.resize(3,3);
+  m_pitch.resize(3,3);
+  m_yaw.resize(3,3);
+
+  m_roll << 1, 0, 0,
+      0, cos(roll),  -sin(roll),
+      0,           sin(roll),  cos(roll);
+
+  m_pitch  <<  cos(pitch), 0,  sin(pitch),
+      0, 1,  0,
+      -sin(pitch), 0,     cos(pitch);
+
+
+  m_yaw << cos(yaw), -sin(yaw), 0,
+      sin(yaw),  cos(yaw), 0,
+      0,            0, 1;
+
+  return m_yaw*m_pitch*m_roll;
+}
 
 Eigen::Matrix4d Kinematics::desired_transformation_matrix(double x, double y, double z, double roll, double pitch, double yaw)
 {
@@ -485,9 +604,9 @@ Eigen::Matrix3d Kinematics::rotation_matrix_x(double radian)
 {
   Eigen::Matrix3d r;
 
-  r   << 1, cos(radian), -sin(radian),
-      0, sin(radian),  cos(radian),
-      0,           0,            0;
+  r   << 1, 0, 0,
+      0, cos(radian),  -sin(radian),
+      0, sin(radian),  cos(radian);
 
   return r;
 
