@@ -19,6 +19,7 @@ CalRad::CalRad()
 
 	cal_one_joint_traj_rad = new FifthOrderTrajectory;
 
+
 	current_pose_change.resize(6,3);
 	current_pose_change.fill(0);
 
@@ -112,6 +113,17 @@ double CalRad::cal_one_joint_rad(Eigen::MatrixXd joint_)
 Eigen::MatrixXd CalRad::get_traj_results()
 {
   return results;
+}
+void CalRad::set_control_time(double ctrl_time)
+{
+  cal_end_point_tra_px->control_time_ = ctrl_time;
+  cal_end_point_tra_py->control_time_ = ctrl_time;
+  cal_end_point_tra_pz->control_time_ = ctrl_time;
+
+  cal_end_point_tra_alpha->control_time_ = ctrl_time;
+  cal_end_point_tra_betta->control_time_ = ctrl_time;
+  cal_end_point_tra_kamma->control_time_ = ctrl_time;
+
 }
 
 

@@ -359,33 +359,30 @@ Eigen::MatrixXd Kinematics::get_axis_to_euler_angle(double val_x, double val_y, 
 
   magnitude = sqrt(pow(val_x,2) + pow(val_y,2) + pow(val_z,2));
 
-  qx = val_x * sin(magnitude/2);
-  qy = val_y * sin(magnitude/2);
-  qz = val_z * sin(magnitude/2);
+  if(magnitude == 0)
+    return euler_angle;
+
+  qx = val_x/magnitude * sin(magnitude/2);
+  qy = val_y/magnitude * sin(magnitude/2);
+  qz = val_z/magnitude * sin(magnitude/2);
   qw = cos(magnitude/2);
 
-  double test = qx*qy + qz*qw;
+  // roll (x-axis rotation)
+  double sinr_cosp = 2 * (qw * qx + qy * qz);
+  double cosr_cosp = 1 - 2 * (qx * qx + qy * qy);
+  euler_angle(0,0) = atan2(sinr_cosp, cosr_cosp);
 
-  if (test > 0.499) { // singularity at north pole
-    euler_angle(2,0) = 2 * atan2(qx,qw); //yaw
-    euler_angle(1,0) = M_PI/2; // pitch
-    euler_angle(0,0) = 0; // roll
-    return euler_angle;
-  }
-  if (test < -0.499) { // singularity at south pole
-    euler_angle(2,0) = -2 * atan2(qx,qw);
-    euler_angle(1,0) = - M_PI/2;
-    euler_angle(0,0) = 0;
-    return euler_angle;
-  }
+  // pitch (y-axis rotation)
+  double sinp = 2 * (qw * qy - qz * qx);
+  if (abs(sinp) >= 1)
+    euler_angle(1,0) = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+  else
+    euler_angle(1,0) = asin(sinp);
 
-  double sqx = qx*qx;
-  double sqy = qy*qy;
-  double sqz = qz*qz;
-  euler_angle(2,0) = atan2(2*qy*qw-2*qx*qz , 1 - 2*sqy - 2*sqz);
-  euler_angle(1,0) = asin(2*test);
-  euler_angle(0,0) = atan2(2*qx*qw-2*qy*qz , 1 - 2*sqx - 2*sqz);
-
+  // yaw (z-axis rotation)
+  double siny_cosp = 2 * (qw * qz + qx * qy);
+  double cosy_cosp = 1 - 2 * (qy * qy + qz * qz);
+  euler_angle(2,0) = atan2(siny_cosp, cosy_cosp);
 
   return euler_angle;
 }
@@ -495,27 +492,27 @@ Eigen::MatrixXd Kinematics::get_rotation_matrix_to_axis(Eigen::Matrix3d r_m)
 }
 Eigen::MatrixXd Kinematics::get_rotation_matrix_to_euler(Eigen::Matrix3d r_m)
 {
-  static Eigen::MatrixXd euler_angle;
-  euler_angle.resize(3,1);
-  euler_angle.fill(0);
-
-  if (r_m(1,0) > 0.998) { // singularity at north pole
-    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
-    euler_angle(1,0) = M_PI/2;
-    euler_angle(0,0)= 0;
-    return euler_angle;
-  }
-  if (r_m(1,0) < -0.998) { // singularity at south pole
-    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
-    euler_angle(1,0) = -M_PI/2;
-    euler_angle(0,0) = 0;
-    return euler_angle;
-  }
-  euler_angle(2,0) =atan2(-r_m(2,0),r_m(0,0));
-  euler_angle(0,0) =atan2(-r_m(1,2),r_m(1,1));
-  euler_angle(1,0) =asin(r_m(1,0));
-
-  return euler_angle;
+  //  static Eigen::MatrixXd euler_angle;
+  //  euler_angle.resize(3,1);
+  //  euler_angle.fill(0);
+  //
+  //  if (r_m(1,0) > 0.998) { // singularity at north pole
+  //    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
+  //    euler_angle(1,0) = M_PI/2;
+  //    euler_angle(0,0)= 0;
+  //    return euler_angle;
+  //  }
+  //  if (r_m(1,0) < -0.998) { // singularity at south pole
+  //    euler_angle(2,0) = atan2(r_m(0,2),r_m(2,2));
+  //    euler_angle(1,0) = -M_PI/2;
+  //    euler_angle(0,0) = 0;
+  //    return euler_angle;
+  //  }
+  //  euler_angle(2,0) =atan2(-r_m(2,0),r_m(0,0));
+  //  euler_angle(0,0) =atan2(-r_m(1,2),r_m(1,1));
+  //  euler_angle(1,0) =asin(r_m(1,0));
+  //
+  //  return euler_angle; FIXXXX ZYX rotation ~
 }
 Eigen::Matrix4d Kinematics::get_tf_base_to_tool()
 {

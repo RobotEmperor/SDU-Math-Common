@@ -20,6 +20,7 @@ public:
 	void cal_end_point_to_rad(Eigen::MatrixXd eP_);
 	double cal_one_joint_rad(Eigen::MatrixXd joint_);
 
+
 	FifthOrderTrajectory *cal_end_point_tra_px;
 	FifthOrderTrajectory *cal_end_point_tra_py;
 	FifthOrderTrajectory *cal_end_point_tra_pz;
@@ -35,6 +36,7 @@ public:
 	Eigen::MatrixXd current_one_joint_pose;
 
 	Eigen::MatrixXd get_traj_results();
+	void set_control_time(double ctrl_time);
 
 private:
 	Eigen::MatrixXd results;

@@ -150,7 +150,7 @@ double FifthOrderTrajectory::fifth_order_traj_gen(double initial_value_, double 
 
   if(current_time <= final_time_)
   {
-    current_time = current_time + 0.005;
+    current_time = current_time + control_time_;
     time_variables_ << pow(current_time, 5), pow(current_time, 4), pow(current_time, 3), pow(current_time, 2), current_time, 1.0;
     current_pose     = (time_variables_ * position_coeff_).coeff(0,0);
     current_velocity = (time_variables_ * velocity_coeff_).coeff(0,0);
