@@ -14,6 +14,7 @@ find_package(Eigen3 REQUIRED)
 INCLUDE_DIRECTORIES (${EIGEN3_INCLUDE_DIR})
 
 set(LIB_HEADER_FILES
+   ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/control_function.h
    ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/kinematics.h
    ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/statistics_math.h
    ${CMAKE_SOURCE_DIR}/sdu_math/include/sdu_math/end_point_to_rad_cal.h
@@ -21,6 +22,7 @@ set(LIB_HEADER_FILES
    )
 
 set( sdu_math_SOURCE_FILES 
+ sdu_math/src/control_function.cpp
  sdu_math/src/kinematics.cpp
  sdu_math/src/statistics_math.cpp
  sdu_math/src/end_point_to_rad_cal.cpp
