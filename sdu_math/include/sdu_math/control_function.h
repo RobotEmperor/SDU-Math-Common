@@ -10,6 +10,12 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <memory>
+
+#include "sdu_math/control_function.h"
+#include "sdu_math/end_point_to_rad_cal.h"
+
+using namespace std;
 
 class PID_function
 {
@@ -17,16 +23,26 @@ public:
   PID_function(double dt, double max, double min, double kp, double kd, double ki);
   ~PID_function();
   double PID_calculate(double ref_value, double current_value);
+  double get_kp_gain();
+  double get_ki_gain();
+  double get_kd_gain();
+  void set_pid_gain(double p_gain,double i_gain,double d_gain);
+
+private:
+  std::shared_ptr<CalRad> gain_traj;
+
+  Eigen::MatrixXd desired_values;
+
+  double dt_;
+  double pre_error_;
+  double integral_;
   double kp_;
   double kd_;
   double ki_;
   double max_;
   double min_;
 
-private:
-  double dt_;
-  double pre_error_;
-  double integral_;
+
 };
 
 

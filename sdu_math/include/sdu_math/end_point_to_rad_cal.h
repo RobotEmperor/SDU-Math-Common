@@ -41,15 +41,4 @@ public:
 private:
 	Eigen::MatrixXd results;
 };
-
-
-
-
-
-
-
-
-
-
-
 #endif /* SDU_MATH_SDU_MATH_INCLUDE_END_POINT_TO_RAD_CAL_H_ */
