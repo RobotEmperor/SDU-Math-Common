@@ -26,6 +26,7 @@ public:
   double get_kp_gain();
   double get_ki_gain();
   double get_kd_gain();
+  double get_final_output();
   void set_pid_gain(double p_gain,double i_gain,double d_gain);
 
 private:
@@ -41,6 +42,7 @@ private:
   double ki_;
   double max_;
   double min_;
+  double final_output;
 
 
 };

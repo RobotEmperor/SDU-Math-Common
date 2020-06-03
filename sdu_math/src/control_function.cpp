@@ -24,9 +24,9 @@ PID_function::PID_function(double dt, double max, double min, double kp, double 
   desired_values.resize(6,8);
   desired_values.fill(0);
 
-  desired_values(0,7) = 2;
-  desired_values(1,7) = 2;
-  desired_values(2,7) = 2;
+  desired_values(0,7) = 4;
+  desired_values(1,7) = 4;
+  desired_values(2,7) = 4;
 
   for(int num=0;num<6;num++)
   {
@@ -35,6 +35,8 @@ PID_function::PID_function(double dt, double max, double min, double kp, double 
   gain_traj->cal_end_point_tra_px->current_pose = 0;
   gain_traj->cal_end_point_tra_py->current_pose = 0;
   gain_traj->cal_end_point_tra_pz->current_pose = 0;
+
+  final_output = 0;
 }
 PID_function::~PID_function()
 {
@@ -66,8 +68,10 @@ double PID_function::PID_calculate(double ref_value, double current_value)
 
       pre_error_ = error;
 
-      if(output < 0.0005 && output > -0.0005)
+      if(output < 0.000001 && output > -0.000001)
       output = 0;
+
+      final_output = output;
 
       return output;
 }
@@ -95,5 +99,10 @@ double PID_function::get_kd_gain()
 {
   return kd_;
 }
+double PID_function::get_final_output()
+{
+  return final_output;
+}
+
 
 
