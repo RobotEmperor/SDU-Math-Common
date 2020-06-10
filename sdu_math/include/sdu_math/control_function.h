@@ -20,7 +20,7 @@ using namespace std;
 class PID_function
 {
 public:
-  PID_function(double dt, double max, double min, double kp, double kd, double ki);
+  PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min);
   ~PID_function();
   double PID_calculate(double ref_value, double current_value);
   double get_kp_gain();
@@ -43,6 +43,8 @@ private:
   double max_;
   double min_;
   double final_output;
+  double threshold_max_;
+  double threshold_min_;
 
 
 };

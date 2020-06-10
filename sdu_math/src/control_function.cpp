@@ -8,7 +8,7 @@
 #include "sdu_math/control_function.h"
 
 /////// PID function /////////////////////////////////////////////////////////////////////////
-PID_function::PID_function(double dt, double max, double min, double kp, double kd, double ki):
+PID_function::PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min):
   dt_(dt),
   max_(max),
   min_(min),
@@ -16,7 +16,9 @@ PID_function::PID_function(double dt, double max, double min, double kp, double 
   ki_(ki),
   kd_(kd),
   pre_error_(0),
-  integral_(0)
+  integral_(0),
+  threshold_max_(threshold_max),
+  threshold_min_(threshold_min)
 {
   gain_traj = std::make_shared<CalRad>();
   gain_traj->set_control_time(dt_);
@@ -68,7 +70,7 @@ double PID_function::PID_calculate(double ref_value, double current_value)
 
       pre_error_ = error;
 
-      if(output < 0.000001 && output > -0.000001)
+      if(output < threshold_max_ && output > threshold_min_)
       output = 0;
 
       final_output = output;
