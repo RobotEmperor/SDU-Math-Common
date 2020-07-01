@@ -9,18 +9,18 @@
 
 /////// PID function /////////////////////////////////////////////////////////////////////////
 PID_function::PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min):
-  dt_(dt),
-  max_(max),
-  min_(min),
-  kp_(kp),
-  ki_(ki),
-  kd_(kd),
-  pre_error_(0),
-  integral_(0),
-  threshold_max_(threshold_max),
-  threshold_min_(threshold_min)
+dt_(dt),
+max_(max),
+min_(min),
+kp_(kp),
+ki_(ki),
+kd_(kd),
+pre_error_(0),
+integral_(0),
+threshold_max_(threshold_max),
+threshold_min_(threshold_min)
 {
-  gain_traj = std::make_shared<CalRad>();
+  gain_traj = new EndEffectorTraj;
   gain_traj->set_control_time(dt_);
 
   desired_values.resize(6,8);
@@ -42,40 +42,45 @@ PID_function::PID_function(double dt, double max, double min, double kp, double 
 }
 PID_function::~PID_function()
 {
+  delete gain_traj;
 }
-double PID_function::PID_calculate(double ref_value, double current_value)
+double PID_function::PID_calculate(double ref_value, double current_value, double input_threshold)
 {
-    // calculate error
-      double error = ref_value - current_value;
+//  if(ref_value + input_threshold >= current_value && ref_value - input_threshold <= current_value)
+//  {
+//    current_value = ref_value;
+//  }
 
-      // P gain
-      double p_control_value = kp_ * error;
+  // calculate error
+  double error = ref_value - current_value;
 
-      // I gain
-      integral_ += error * dt_;
-      double i_control_value = ki_ * integral_;
+  // P gain
+  double p_control_value = kp_ * error;
 
-      //D gain
-      double derivate = (error - pre_error_)/dt_;
-      double d_control_value = kd_ * derivate;
+  // I gain
+  integral_ += error * dt_;
+  double i_control_value = ki_ * integral_;
 
-      // calculate control value
+  //D gain
+  double derivate = (error - pre_error_)/dt_;
+  double d_control_value = kd_ * derivate;
 
-      double output = p_control_value + i_control_value + d_control_value;
+  // calculate control value
+  double output = p_control_value + i_control_value + d_control_value;
 
-      if(output > max_)
-        output = max_;
-      else if (output < min_)
-        output = min_;
+  if(output > max_)
+    output = max_;
+  else if (output < min_)
+    output = min_;
 
-      pre_error_ = error;
+  pre_error_ = error;
 
-      if(output < threshold_max_ && output > threshold_min_)
-      output = 0;
+//  if(output < threshold_max_ && output > threshold_min_)
+//    output = 0;
 
-      final_output = output;
+  final_output = output;
 
-      return output;
+  return output;
 }
 void PID_function::set_pid_gain(double p_gain,double i_gain,double d_gain)
 {

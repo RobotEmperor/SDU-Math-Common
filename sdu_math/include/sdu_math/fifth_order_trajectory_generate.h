@@ -26,6 +26,8 @@ class FifthOrderTrajectory
     bool   detect_change_final_value(double pose, double velocity_, double time_);
     double fifth_order_traj_gen_one_value(Eigen::MatrixXd joint_);
 
+    void stop_trajectory();
+
     bool is_moving_traj;
 
     double initial_time;

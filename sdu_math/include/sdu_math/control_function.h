@@ -22,7 +22,7 @@ class PID_function
 public:
   PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min);
   ~PID_function();
-  double PID_calculate(double ref_value, double current_value);
+  double PID_calculate(double ref_value, double current_value, double input_threshold);
   double get_kp_gain();
   double get_ki_gain();
   double get_kd_gain();
@@ -30,7 +30,7 @@ public:
   void set_pid_gain(double p_gain,double i_gain,double d_gain);
 
 private:
-  std::shared_ptr<CalRad> gain_traj;
+  EndEffectorTraj* gain_traj;
 
   Eigen::MatrixXd desired_values;
 

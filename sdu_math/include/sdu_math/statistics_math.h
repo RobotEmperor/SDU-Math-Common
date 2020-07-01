@@ -13,11 +13,11 @@
 #include <math.h>
 #include <Eigen/Dense>
 
-class Statistics
+class StatisticsMath
 {
   public:
-    Statistics();
-    ~Statistics();
+    StatisticsMath();
+    ~StatisticsMath();
     int calculate_cusum(double data, double allowable_slack_gain_k, double high_limit, double low_limit);
     double calculate_mean(double data);
     double calculate_diff(double value, double control_time);

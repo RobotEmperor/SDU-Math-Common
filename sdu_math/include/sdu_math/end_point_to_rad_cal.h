@@ -10,15 +10,17 @@
 
 #include "sdu_math/fifth_order_trajectory_generate.h"
 
-class CalRad
+class EndEffectorTraj
 {
 public:
-	CalRad();
-	~CalRad();
+  EndEffectorTraj();
+	~EndEffectorTraj();
 	bool is_moving_check;
 
-	void cal_end_point_to_rad(Eigen::MatrixXd eP_);
+	void cal_end_point_to_rad(Eigen::Matrix<double, 6, 8> eP_);
 	double cal_one_joint_rad(Eigen::MatrixXd joint_);
+
+	void stop_trajectory();
 
 
 	FifthOrderTrajectory *cal_end_point_tra_px;
@@ -32,13 +34,13 @@ public:
 	FifthOrderTrajectory *cal_one_joint_traj_rad;
 
 
-	Eigen::MatrixXd current_pose_change;
+	Eigen::Matrix<double, 6, 3> current_pose_change;
 	Eigen::MatrixXd current_one_joint_pose;
 
-	Eigen::MatrixXd get_traj_results();
+	Eigen::Matrix<double, 6, 1> get_traj_results();
 	void set_control_time(double ctrl_time);
 
 private:
-	Eigen::MatrixXd results;
+	Eigen::Matrix<double, 6, 1> results;
 };
 #endif /* SDU_MATH_SDU_MATH_INCLUDE_END_POINT_TO_RAD_CAL_H_ */

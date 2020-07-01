@@ -7,35 +7,40 @@
 
 #include "sdu_math/end_point_to_rad_cal.h"
 
-CalRad::CalRad()
+EndEffectorTraj::EndEffectorTraj()
 {
 	cal_end_point_tra_px = new FifthOrderTrajectory;
 	cal_end_point_tra_py = new FifthOrderTrajectory;
 	cal_end_point_tra_pz = new FifthOrderTrajectory;
-
 	cal_end_point_tra_alpha = new FifthOrderTrajectory;
 	cal_end_point_tra_betta = new FifthOrderTrajectory;
 	cal_end_point_tra_kamma = new FifthOrderTrajectory;
-
 	cal_one_joint_traj_rad = new FifthOrderTrajectory;
 
 
-	current_pose_change.resize(6,3);
+	//current_pose_change.resize(6,3);
 	current_pose_change.fill(0);
 
 	current_one_joint_pose.resize(1,2);
 	current_one_joint_pose.fill(0);
 
-	results.resize(6,1); // 6DOF LEG
+	//results.resize(6,1); // 6DOF LEG
 	results.fill(0);
 
 	is_moving_check = false;
 }
 
-CalRad::~CalRad()
+EndEffectorTraj::~EndEffectorTraj()
 {
+  delete cal_end_point_tra_px;
+  delete cal_end_point_tra_py;
+  delete cal_end_point_tra_pz;
+  delete cal_end_point_tra_alpha;
+  delete cal_end_point_tra_betta;
+  delete cal_end_point_tra_kamma;
+  delete cal_one_joint_traj_rad;
 }
-void CalRad::cal_end_point_to_rad(Eigen::MatrixXd eP_) // end point 6 X 8 6 is xyz roll pitch yaw 8은 trajectory 입력
+void EndEffectorTraj::cal_end_point_to_rad(Eigen::Matrix<double, 6, 8> eP_) // end point 6 X 8 6 is xyz roll pitch yaw 8은 trajectory 입력
 {
 	if( cal_end_point_tra_px    -> detect_change_final_value(eP_(0,1), eP_(0,3), eP_(0,7))||
 			cal_end_point_tra_py    -> detect_change_final_value(eP_(1,1), eP_(1,3), eP_(1,7))||
@@ -51,31 +56,32 @@ void CalRad::cal_end_point_to_rad(Eigen::MatrixXd eP_) // end point 6 X 8 6 is x
 
 		current_pose_change(1,0) = cal_end_point_tra_py    -> current_pose;
 		current_pose_change(1,1) = cal_end_point_tra_py    -> current_velocity;
-		current_pose_change(1,2) = cal_end_point_tra_px    -> current_acc;
+		current_pose_change(1,2) = cal_end_point_tra_py    -> current_acc;
 		cal_end_point_tra_py    -> current_time = 0;
 
 		current_pose_change(2,0) = cal_end_point_tra_pz    -> current_pose;
 		current_pose_change(2,1) = cal_end_point_tra_pz    -> current_velocity;
-		current_pose_change(2,2) = cal_end_point_tra_px    -> current_acc;
+		current_pose_change(2,2) = cal_end_point_tra_pz    -> current_acc;
 		cal_end_point_tra_pz    -> current_time = 0;
 
 		current_pose_change(3,0) = cal_end_point_tra_alpha -> current_pose;
 		current_pose_change(3,1) = cal_end_point_tra_alpha -> current_velocity;
-		current_pose_change(3,2) = cal_end_point_tra_px    -> current_acc;
+		current_pose_change(3,2) = cal_end_point_tra_alpha    -> current_acc;
 		cal_end_point_tra_alpha -> current_time = 0;
 
 		current_pose_change(4,0) = cal_end_point_tra_betta -> current_pose;
 		current_pose_change(4,1) = cal_end_point_tra_betta -> current_velocity;
-		current_pose_change(4,2) = cal_end_point_tra_px    -> current_acc;
+		current_pose_change(4,2) = cal_end_point_tra_betta    -> current_acc;
 		cal_end_point_tra_betta -> current_time = 0;
 
 		current_pose_change(5,0) = cal_end_point_tra_kamma -> current_pose;
 		current_pose_change(5,1) = cal_end_point_tra_kamma -> current_velocity;
-		current_pose_change(5,2) = cal_end_point_tra_px    -> current_acc;
+		current_pose_change(5,2) = cal_end_point_tra_kamma    -> current_acc;
 		cal_end_point_tra_kamma -> current_time = 0;
 
 		//ROS_INFO("Initialize && Change End Point Value");
 	}
+
 
 	results(0,0) = cal_end_point_tra_px -> fifth_order_traj_gen(current_pose_change(0,0), eP_(0,1), current_pose_change(0,1), eP_(0,3), current_pose_change(0,2), eP_(0,5), eP_(0,6), eP_(0,7));// initial pose, final pose, initial vel, final vel, initial acc, final acc, initial time, final time
 	results(1,0) = cal_end_point_tra_py -> fifth_order_traj_gen(current_pose_change(1,0), eP_(1,1), current_pose_change(1,1), eP_(1,3), current_pose_change(1,2), eP_(1,5), eP_(1,6), eP_(1,7));
@@ -95,7 +101,7 @@ void CalRad::cal_end_point_to_rad(Eigen::MatrixXd eP_) // end point 6 X 8 6 is x
 		is_moving_check = false;
 }
 
-double CalRad::cal_one_joint_rad(Eigen::MatrixXd joint_)
+double EndEffectorTraj::cal_one_joint_rad(Eigen::MatrixXd joint_)
 {
 	double result_one_joint_;
 
@@ -110,11 +116,11 @@ double CalRad::cal_one_joint_rad(Eigen::MatrixXd joint_)
 	 return result_one_joint_;
 }
 
-Eigen::MatrixXd CalRad::get_traj_results()
+Eigen::Matrix<double, 6, 1> EndEffectorTraj::get_traj_results()
 {
   return results;
 }
-void CalRad::set_control_time(double ctrl_time)
+void EndEffectorTraj::set_control_time(double ctrl_time)
 {
   cal_end_point_tra_px->control_time_ = ctrl_time;
   cal_end_point_tra_py->control_time_ = ctrl_time;
@@ -124,6 +130,15 @@ void CalRad::set_control_time(double ctrl_time)
   cal_end_point_tra_betta->control_time_ = ctrl_time;
   cal_end_point_tra_kamma->control_time_ = ctrl_time;
 
+}
+void EndEffectorTraj::stop_trajectory()
+{
+  cal_end_point_tra_px    ->stop_trajectory();
+  cal_end_point_tra_py    ->stop_trajectory();
+  cal_end_point_tra_pz    ->stop_trajectory();
+  cal_end_point_tra_alpha ->stop_trajectory();
+  cal_end_point_tra_betta ->stop_trajectory();
+  cal_end_point_tra_kamma ->stop_trajectory();
 }
 
 

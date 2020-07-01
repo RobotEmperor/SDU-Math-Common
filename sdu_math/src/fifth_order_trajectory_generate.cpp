@@ -8,6 +8,12 @@
 
 #include "sdu_math/fifth_order_trajectory_generate.h"
 
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
+
 FifthOrderTrajectory::FifthOrderTrajectory(double control_time)
 {
 
@@ -112,24 +118,37 @@ double FifthOrderTrajectory::fifth_order_traj_gen(double initial_value_, double 
     initial_velocity_ = current_velocity;
     initial_acc_      = current_acc;
 
-    Eigen::MatrixXd time_mat;
-    Eigen::MatrixXd conditions_mat;
+    static double a[6];
+    static double d_t;
 
-    time_mat.resize(6,6);
-    time_mat.fill(0);
-    time_mat <<  pow(initial_time_, 5),      pow(initial_time_, 4),     pow(initial_time_, 3),  pow(initial_time_, 2),  initial_time_, 1.0,
-             5.0*pow(initial_time_, 4),  4.0*pow(initial_time_, 3), 3.0*pow(initial_time_, 2),        2.0*initial_time_,            1.0, 0.0,
-            20.0*pow(initial_time_, 3), 12.0*pow(initial_time_, 2),           6.0*initial_time_,                      2.0,            0.0, 0.0,
-                   pow(final_time_, 5),        pow(final_time_, 4),       pow(final_time_, 3),    pow(final_time_, 2),    final_time_, 1.0,
-               5.0*pow(final_time_, 4),    4.0*pow(final_time_, 3),   3.0*pow(final_time_, 2),          2.0*final_time_,            1.0, 0.0,
-              20.0*pow(final_time_, 3),   12.0*pow(final_time_, 2),             6.0*final_time_,                      2.0,            0.0, 0.0;
+    static Eigen::Matrix<double, 6, 6>  time_mat;
+    static Eigen::Matrix<double, 6, 1>  conditions_mat;
 
-    conditions_mat.resize(6,1);
-    conditions_mat.fill(0);
-    conditions_mat << initial_value_, initial_velocity_, initial_acc_, final_value_, final_velocity_, final_acc_;
+    //    time_mat.fill(0);
+    //    time_mat <<  pow(initial_time_, 5),      pow(initial_time_, 4),     pow(initial_time_, 3),  pow(initial_time_, 2),  initial_time_, 1.0,
+    //        5.0*pow(initial_time_, 4),  4.0*pow(initial_time_, 3), 3.0*pow(initial_time_, 2),        2.0*initial_time_,            1.0, 0.0,
+    //        20.0*pow(initial_time_, 3), 12.0*pow(initial_time_, 2),           6.0*initial_time_,                      2.0,            0.0, 0.0,
+    //        pow(final_time_, 5),        pow(final_time_, 4),       pow(final_time_, 3),    pow(final_time_, 2),    final_time_, 1.0,
+    //        5.0*pow(final_time_, 4),    4.0*pow(final_time_, 3),   3.0*pow(final_time_, 2),          2.0*final_time_,            1.0, 0.0,
+    //        20.0*pow(final_time_, 3),   12.0*pow(final_time_, 2),             6.0*final_time_,                      2.0,            0.0, 0.0;
+    //    conditions_mat.fill(0);
+    //    conditions_mat << initial_value_, initial_velocity_, initial_acc_, final_value_, final_velocity_, final_acc_;
+    //position_coeff_ = time_mat.inverse() * conditions_mat;
 
-    position_coeff_ = time_mat.inverse() * conditions_mat;
+    d_t = final_time_ - initial_time_;
+    a[0] = initial_value_;
+    a[1] = initial_velocity_;
+    a[2] = initial_acc_/2;
+    a[3] = (20*(final_value_ - initial_value_) - (8*final_velocity_ + 12*initial_velocity_)*d_t - (3*final_acc_ - initial_acc_)*pow(d_t,2))/(2*pow(d_t,3));
+    a[4] = (30*(initial_value_ - final_value_) + (14*final_velocity_ + 16*initial_velocity_)*d_t + (3*final_acc_ - 2*initial_acc_)*pow(d_t,2))/(2*pow(d_t,4));
+    a[5] = (12*(final_value_ - initial_value_) - 6*(final_velocity_ + initial_velocity_)*d_t - (final_acc_ - initial_acc_)*pow(d_t,2))/(2*pow(d_t,5));
 
+    position_coeff_<< a[5],
+        a[4],
+        a[3],
+        a[2],
+        a[1],
+        a[0];
 
     velocity_coeff_ <<                            0.0,
         5.0*position_coeff_.coeff(0,0),
@@ -145,7 +164,7 @@ double FifthOrderTrajectory::fifth_order_traj_gen(double initial_value_, double 
         2.0*position_coeff_.coeff(3,0);
 
 
-        is_moving_traj = true;
+    is_moving_traj = true;
   }
 
   if(current_time <= final_time_)
@@ -178,4 +197,10 @@ double FifthOrderTrajectory::fifth_order_traj_gen_one_value(Eigen::MatrixXd join
   result_one_joint_ = fifth_order_traj_gen(current_pose, joint_(0,1), current_velocity, joint_(0,3), joint_(0,4), joint_(0,5), joint_(0,6), joint_(0,7));
 
   return result_one_joint_;
+}
+
+void FifthOrderTrajectory::stop_trajectory()
+{
+  current_velocity = 0;
+  current_acc = 0;
 }
