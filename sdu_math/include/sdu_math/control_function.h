@@ -32,7 +32,7 @@ public:
 private:
   EndEffectorTraj* gain_traj;
 
-  Eigen::MatrixXd desired_values;
+  Eigen::Matrix<double, 6, 8>  desired_values;
 
   double dt_;
   double pre_error_;

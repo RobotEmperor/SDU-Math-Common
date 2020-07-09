@@ -48,13 +48,16 @@ int StatisticsMath::calculate_cusum(double data, double allowable_slack_gain_k, 
   else
     detection= 0;
 
+//  printf("sum_h : %f \n", sum_h);
+//  printf("sum_l : %f \n", sum_l);
 
-  if(detection == 1 || detection == -1)
-  {
-    //target_value = data;
-    pre_s_h, sum_h = 0;
-    pre_s_l, sum_l = 0;
-  }
+
+//  if(detection == 1 || detection == -1)
+//  {
+//    //target_value = data;
+//    pre_s_h, sum_h = 0;
+//    pre_s_l, sum_l = 0;
+//  }
 
   pre_s_h = sum_h;
   pre_s_l = sum_l;

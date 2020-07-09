@@ -23,7 +23,6 @@ threshold_min_(threshold_min)
   gain_traj = new EndEffectorTraj;
   gain_traj->set_control_time(dt_);
 
-  desired_values.resize(6,8);
   desired_values.fill(0);
 
   desired_values(0,7) = 4;
@@ -46,10 +45,10 @@ PID_function::~PID_function()
 }
 double PID_function::PID_calculate(double ref_value, double current_value, double input_threshold)
 {
-//  if(ref_value + input_threshold >= current_value && ref_value - input_threshold <= current_value)
-//  {
-//    current_value = ref_value;
-//  }
+  if(ref_value + input_threshold >= current_value && ref_value - input_threshold <= current_value)
+  {
+    current_value = ref_value;
+  }
 
   // calculate error
   double error = ref_value - current_value;
