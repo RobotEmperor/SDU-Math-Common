@@ -27,6 +27,7 @@ public:
   double get_ki_gain();
   double get_kd_gain();
   double get_final_output();
+  double get_error();
   void set_pid_gain(double p_gain,double i_gain,double d_gain);
 
 private:
@@ -35,6 +36,7 @@ private:
   Eigen::Matrix<double, 6, 8>  desired_values;
 
   double dt_;
+  double error_;
   double pre_error_;
   double integral_;
   double kp_;
@@ -42,7 +44,7 @@ private:
   double ki_;
   double max_;
   double min_;
-  double final_output;
+  double final_output_;
   double threshold_max_;
   double threshold_min_;
 

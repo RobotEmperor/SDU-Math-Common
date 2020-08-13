@@ -37,7 +37,9 @@ threshold_min_(threshold_min)
   gain_traj->cal_end_point_tra_py->current_pose = 0;
   gain_traj->cal_end_point_tra_pz->current_pose = 0;
 
-  final_output = 0;
+  final_output_ = 0;
+
+  error_= 0;
 }
 PID_function::~PID_function()
 {
@@ -51,17 +53,17 @@ double PID_function::PID_calculate(double ref_value, double current_value, doubl
   }
 
   // calculate error
-  double error = ref_value - current_value;
+  error_ = ref_value - current_value;
 
   // P gain
-  double p_control_value = kp_ * error;
+  double p_control_value = kp_ * error_;
 
   // I gain
-  integral_ += error * dt_;
+  integral_ += error_ * dt_;
   double i_control_value = ki_ * integral_;
 
   //D gain
-  double derivate = (error - pre_error_)/dt_;
+  double derivate = (error_ - pre_error_)/dt_;
   double d_control_value = kd_ * derivate;
 
   // calculate control value
@@ -72,12 +74,12 @@ double PID_function::PID_calculate(double ref_value, double current_value, doubl
   else if (output < min_)
     output = min_;
 
-  pre_error_ = error;
+  pre_error_ = error_;
 
 //  if(output < threshold_max_ && output > threshold_min_)
 //    output = 0;
 
-  final_output = output;
+  final_output_ = output;
 
   return output;
 }
@@ -107,7 +109,12 @@ double PID_function::get_kd_gain()
 }
 double PID_function::get_final_output()
 {
-  return final_output;
+  return final_output_;
+}
+
+double PID_function::get_error()
+{
+  return error_;
 }
 
 
