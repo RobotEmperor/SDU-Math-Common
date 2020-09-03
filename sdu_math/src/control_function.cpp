@@ -5,7 +5,7 @@
  *      Author: yik
  */
 
-#include "sdu_math/control_function.h"
+#include <sdu_math/control_function.h>
 
 /////// PID function /////////////////////////////////////////////////////////////////////////
 PID_function::PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min):

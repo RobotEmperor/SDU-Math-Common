@@ -5,7 +5,7 @@
  *      Author: yik
  */
 
-#include "sdu_math/statistics_math.h"
+#include <sdu_math/statistics_math.h>
 
 StatisticsMath::StatisticsMath()
 {

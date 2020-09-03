@@ -6,7 +6,7 @@
  */
 
 
-#include "sdu_math/fifth_order_trajectory_generate.h"
+#include <sdu_math/fifth_order_trajectory_generate.h>
 
 #include <fstream>
 #include <string>

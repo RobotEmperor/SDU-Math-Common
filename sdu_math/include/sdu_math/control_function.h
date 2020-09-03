@@ -12,8 +12,8 @@
 #include <math.h>
 #include <memory>
 
-#include "sdu_math/control_function.h"
-#include "sdu_math/end_point_to_rad_cal.h"
+#include "control_function.h"
+#include "end_point_to_rad_cal.h"
 
 using namespace std;
 

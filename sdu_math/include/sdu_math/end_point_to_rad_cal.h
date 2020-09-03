@@ -8,7 +8,7 @@
 #ifndef SDU_MATH_SDU_MATH_INCLUDE_END_POINT_TO_RAD_CAL_H_
 #define SDU_MATH_SDU_MATH_INCLUDE_END_POINT_TO_RAD_CAL_H_
 
-#include "sdu_math/fifth_order_trajectory_generate.h"
+#include "fifth_order_trajectory_generate.h"
 
 class EndEffectorTraj
 {

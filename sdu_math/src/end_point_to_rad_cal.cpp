@@ -5,7 +5,7 @@
  *      Author: robotemperor
  */
 
-#include "sdu_math/end_point_to_rad_cal.h"
+#include <sdu_math/end_point_to_rad_cal.h>
 
 EndEffectorTraj::EndEffectorTraj()
 {
