@@ -1,0 +1,6 @@
+/home/yik/sdu_ws/lib/libsdu_math.so
+/home/yik/sdu_ws/include/sdu_math/control_function.h
+/home/yik/sdu_ws/include/sdu_math/kinematics.h
+/home/yik/sdu_ws/include/sdu_math/statistics_math.h
+/home/yik/sdu_ws/include/sdu_math/end_point_to_rad_cal.h
+/home/yik/sdu_ws/include/sdu_math/fifth_order_trajectory_generate.h

@@ -1,0 +1,7 @@
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/install/strip.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/edit_cache.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/sdu_math.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/rebuild_cache.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/list_install_components.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/install/local.dir
+/home/yik/sdu_ws/SDU-Math-Common/build/CMakeFiles/install.dir
