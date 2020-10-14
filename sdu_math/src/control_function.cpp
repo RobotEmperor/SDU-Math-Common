@@ -25,9 +25,9 @@ threshold_min_(threshold_min)
 
   desired_values.fill(0);
 
-  desired_values(0,7) = 4;
-  desired_values(1,7) = 4;
-  desired_values(2,7) = 4;
+  desired_values(0,7) = 0.5;
+  desired_values(1,7) = 0.5;
+  desired_values(2,7) = 0.5;
 
   for(int num=0;num<6;num++)
   {
