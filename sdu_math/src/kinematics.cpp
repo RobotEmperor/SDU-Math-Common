@@ -8,7 +8,7 @@
 #ifndef SDU_MATH_SDU_MATH_SRC_KINEMATICS_CPP_
 #define SDU_MATH_SDU_MATH_SRC_KINEMATICS_CPP_
 
-#include "sdu_math/kinematics.h"
+#include <sdu_math/kinematics.h>
 
 Kinematics::Kinematics()
 {
