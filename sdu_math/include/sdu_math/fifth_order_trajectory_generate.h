@@ -30,11 +30,24 @@ class FifthOrderTrajectory
 
     bool is_moving_traj;
 
+    bool get_is_moving_traj();
+    double get_current_time();
+    double get_current_pose();
+    double get_current_velocity();
+    double get_current_acc();
+
+    double get_control_time();
+
+    void set_current_pose(double curr_pose);
+    void set_current_time(double curr_time);
+    void set_control_time(double ctrl_time);
+
+  private:
+
     double initial_time;
     double initial_pose;
     double initial_velocity;
     double initial_acc;
-
 
     double current_time;
     double current_pose;
@@ -48,10 +61,13 @@ class FifthOrderTrajectory
 
     double control_time_;
 
+    Eigen::Matrix<double, 6, 6>  time_mat;
+    Eigen::Matrix<double, 6, 1>  conditions_mat;
+
     Eigen::MatrixXd position_coeff_;
-    Eigen::MatrixXd velocity_coeff_;
-    Eigen::MatrixXd acceleration_coeff_;
-    Eigen::MatrixXd time_variables_;
+    Eigen::Matrix<double, 6, 1> velocity_coeff_;
+    Eigen::Matrix<double, 6, 1> acceleration_coeff_;
+    Eigen::Matrix<double, 1, 6> time_variables_;
 };
 
 #endif /* SDU_MATH_SDU_MATH_INCLUDE_FIFTH_ORDER_TRAJECTORY_GENERATE_H_ */
