@@ -37,16 +37,12 @@ FifthOrderTrajectory::FifthOrderTrajectory(double control_time)
   final_velocity   = 0;
   final_acc        = 0;
 
-  position_coeff_.resize(6, 1);
-  velocity_coeff_.resize(6, 1);
-  acceleration_coeff_.resize(6, 1);
-  time_variables_.resize(1, 6);
+  position_coeff_.resize(6,1);
 
   position_coeff_.fill(0);
   velocity_coeff_.fill(0);
   acceleration_coeff_.fill(0);
   time_variables_.fill(0);
-
 }
 FifthOrderTrajectory::FifthOrderTrajectory()
 {
@@ -70,16 +66,12 @@ FifthOrderTrajectory::FifthOrderTrajectory()
   final_velocity   = 0;
   final_acc        = 0;
 
-  position_coeff_.resize(6, 1);
-  velocity_coeff_.resize(6, 1);
-  acceleration_coeff_.resize(6, 1);
-  time_variables_.resize(1, 6);
+  position_coeff_.resize(6,1);
 
   position_coeff_.fill(0);
   velocity_coeff_.fill(0);
   acceleration_coeff_.fill(0);
   time_variables_.fill(0);
-
 }
 
 FifthOrderTrajectory::~FifthOrderTrajectory()
@@ -107,6 +99,12 @@ double FifthOrderTrajectory::fifth_order_traj_gen(double initial_value_, double 
     double initial_acc_, double final_acc_,
     double initial_time_, double final_time_)
 {
+  if(final_time_ == 0)
+  {
+    is_moving_traj = false;
+    return current_pose;
+  }
+
   if(current_time == 0)
   {
     final_pose = final_value_;
@@ -118,45 +116,36 @@ double FifthOrderTrajectory::fifth_order_traj_gen(double initial_value_, double 
     initial_velocity_ = current_velocity;
     initial_acc_      = current_acc;
 
-    static double a[6];
-    static double d_t;
-
     static Eigen::Matrix<double, 6, 6>  time_mat;
     static Eigen::Matrix<double, 6, 1>  conditions_mat;
+    time_mat.fill(0);
+    conditions_mat.fill(0);
 
-        time_mat.fill(0);
-        time_mat <<  pow(initial_time_, 5),      pow(initial_time_, 4),     pow(initial_time_, 3),  pow(initial_time_, 2),  initial_time_, 1.0,
-            5.0*pow(initial_time_, 4),  4.0*pow(initial_time_, 3), 3.0*pow(initial_time_, 2),        2.0*initial_time_,            1.0, 0.0,
-            20.0*pow(initial_time_, 3), 12.0*pow(initial_time_, 2),           6.0*initial_time_,                      2.0,            0.0, 0.0,
-            pow(final_time_, 5),        pow(final_time_, 4),       pow(final_time_, 3),    pow(final_time_, 2),    final_time_, 1.0,
-            5.0*pow(final_time_, 4),    4.0*pow(final_time_, 3),   3.0*pow(final_time_, 2),          2.0*final_time_,            1.0, 0.0,
-            20.0*pow(final_time_, 3),   12.0*pow(final_time_, 2),             6.0*final_time_,                      2.0,            0.0, 0.0;
-        conditions_mat.fill(0);
-        conditions_mat << initial_value_, initial_velocity_, initial_acc_, final_value_, final_velocity_, final_acc_;
+    time_mat <<  pow(initial_time_, 5),      pow(initial_time_, 4),     pow(initial_time_, 3),  pow(initial_time_, 2),  initial_time_, 1.0,
+        5.0*pow(initial_time_, 4),  4.0*pow(initial_time_, 3), 3.0*pow(initial_time_, 2),        2.0*initial_time_,            1.0, 0.0,
+        20.0*pow(initial_time_, 3), 12.0*pow(initial_time_, 2),           6.0*initial_time_,                      2.0,            0.0, 0.0,
+        pow(final_time_, 5),        pow(final_time_, 4),       pow(final_time_, 3),    pow(final_time_, 2),    final_time_, 1.0,
+        5.0*pow(final_time_, 4),    4.0*pow(final_time_, 3),   3.0*pow(final_time_, 2),          2.0*final_time_,            1.0, 0.0,
+        20.0*pow(final_time_, 3),   12.0*pow(final_time_, 2),             6.0*final_time_,                      2.0,            0.0, 0.0;
+    conditions_mat << initial_value_,
+        initial_velocity_,
+        initial_acc_,
+        final_value_,
+        final_velocity_,
+        final_acc_;
+
+    if(time_mat.determinant() == 0)
+      return current_pose;
+
     position_coeff_ = time_mat.inverse() * conditions_mat;
 
-//    d_t = final_time_ - initial_time_;
-//    a[0] = initial_value_;
-//    a[1] = initial_velocity_;
-//    a[2] = initial_acc_/2;
-//    a[3] = (20*(final_value_ - initial_value_) - (8*final_velocity_ + 12*initial_velocity_)*d_t - (3*final_acc_ - initial_acc_)*pow(d_t,2))/(2*pow(d_t,3));
-//    a[4] = (30*(initial_value_ - final_value_) + (14*final_velocity_ + 16*initial_velocity_)*d_t + (3*final_acc_ - 2*initial_acc_)*pow(d_t,2))/(2*pow(d_t,4));
-//    a[5] = (12*(final_value_ - initial_value_) - 6*(final_velocity_ + initial_velocity_)*d_t - (final_acc_ - initial_acc_)*pow(d_t,2))/(2*pow(d_t,5));
-
-//    position_coeff_<< a[5],
-//        a[4],
-//        a[3],
-//        a[2],
-//        a[1],
-//        a[0];
-
-    velocity_coeff_ <<                            0.0,
+    velocity_coeff_ <<0.0,
         5.0*position_coeff_.coeff(0,0),
         4.0*position_coeff_.coeff(1,0),
         3.0*position_coeff_.coeff(2,0),
         2.0*position_coeff_.coeff(3,0),
         1.0*position_coeff_.coeff(4,0);
-    acceleration_coeff_ <<                        0.0,
+    acceleration_coeff_ <<0.0,
         0.0,
         20.0*position_coeff_.coeff(0,0),
         12.0*position_coeff_.coeff(1,0),
@@ -203,4 +192,36 @@ void FifthOrderTrajectory::stop_trajectory()
 {
   current_velocity = 0;
   current_acc = 0;
+}
+bool FifthOrderTrajectory::get_is_moving_traj()
+{
+  return is_moving_traj;
+}
+double FifthOrderTrajectory::get_current_time()
+{
+  return current_time;
+}
+double FifthOrderTrajectory::get_current_pose()
+{
+  return current_pose;
+}
+double FifthOrderTrajectory::get_current_velocity()
+{
+  return current_velocity;
+}
+double FifthOrderTrajectory::get_current_acc()
+{
+  return current_acc;
+}
+void FifthOrderTrajectory::set_current_time(double curr_time)
+{
+  current_time = curr_time;
+}
+void FifthOrderTrajectory::set_control_time(double ctrl_time)
+{
+  control_time_ = ctrl_time;
+}
+void FifthOrderTrajectory::set_current_pose(double curr_pose)
+{
+  current_pose = curr_pose;
 }

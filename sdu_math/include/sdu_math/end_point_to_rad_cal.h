@@ -18,10 +18,8 @@ public:
 	bool is_moving_check;
 
 	void cal_end_point_to_rad(Eigen::Matrix<double, 6, 8> eP_);
-	double cal_one_joint_rad(Eigen::MatrixXd joint_);
 
 	void stop_trajectory();
-
 
 	FifthOrderTrajectory *cal_end_point_tra_px;
 	FifthOrderTrajectory *cal_end_point_tra_py;
@@ -32,7 +30,6 @@ public:
 	FifthOrderTrajectory *cal_end_point_tra_kamma;
 
 	FifthOrderTrajectory *cal_one_joint_traj_rad;
-
 
 	Eigen::Matrix<double, 6, 3> current_pose_change;
 	Eigen::MatrixXd current_one_joint_pose;

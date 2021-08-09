@@ -20,7 +20,7 @@ using namespace std;
 class PID_function
 {
 public:
-  PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min);
+  PID_function(double dt, double max, double min, double kp, double kd, double ki, double threshold_max, double threshold_min, double time);
   ~PID_function();
   double PID_calculate(double ref_value, double current_value, double input_threshold);
   double get_kp_gain();
@@ -29,6 +29,7 @@ public:
   double get_final_output();
   double get_error();
   void set_pid_gain(double p_gain,double i_gain,double d_gain);
+  void set_smooth_gain_time(double time);
 
 private:
   EndEffectorTraj* gain_traj;
@@ -47,6 +48,7 @@ private:
   double final_output_;
   double threshold_max_;
   double threshold_min_;
+  double time_;
 
 
 };
